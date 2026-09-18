@@ -348,7 +348,7 @@ function ResetPassword({ onBack }) {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/reset-password",
+        "https://joshpay.onrender.com/api/reset-password",
         {
           method: "POST",
 
@@ -548,3 +548,4 @@ function ResetPassword({ onBack }) {
 }
 
 export default ResetPassword;
+

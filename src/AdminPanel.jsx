@@ -13,7 +13,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-const API = "http://localhost:5000/api";
+const API = "https://joshpay.onrender.com/api";
 
 function money(value) {
   return `₹${Number(value || 0).toLocaleString("en-IN", {
@@ -802,3 +802,4 @@ export default function AdminApp() {
     />
   );
 }
+

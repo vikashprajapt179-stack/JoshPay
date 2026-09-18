@@ -57,7 +57,7 @@ const TaskRewards = ({
       setClaiming(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/task-reward/unlock",
+        "https://joshpay.onrender.com/api/task-reward/unlock",
         {
           method: "POST",
           headers: {

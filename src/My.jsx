@@ -39,7 +39,7 @@ function My({ user, onLogout, onNavigate }) {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/user/${userId}/balance`
+          `https://joshpay.onrender.com/api/user/${userId}/balance`
         );
 
         const data = await response.json();

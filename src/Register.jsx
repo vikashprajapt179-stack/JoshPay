@@ -353,7 +353,7 @@ function Register({ onBack }) {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/register",
+        "https://joshpay.onrender.com/api/register",
         {
           method: "POST",
 

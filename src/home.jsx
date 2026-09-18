@@ -94,7 +94,7 @@ function Home({ user, onLogout, onNavigate }) {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/user/${userId}/balance`
+        `https://joshpay.onrender.com/api/user/${userId}/balance`
       );
 
       const data = await response.json();
@@ -130,7 +130,7 @@ function Home({ user, onLogout, onNavigate }) {
     const interval = setInterval(async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/user/${userId}/balance`
+          `https://joshpay.onrender.com/api/user/${userId}/balance`
         );
 
         const data = await response.json();
@@ -150,7 +150,7 @@ function Home({ user, onLogout, onNavigate }) {
         for (const transaction of processingTransactions) {
           try {
             await fetch(
-              `http://localhost:5000/api/order/status/${userId}/${transaction.orderNo}`
+              `https://joshpay.onrender.com/api/order/status/${userId}/${transaction.orderNo}`
             );
           } catch (error) {
             console.error(
@@ -164,7 +164,7 @@ function Home({ user, onLogout, onNavigate }) {
         if (processingTransactions.length > 0) {
           const updatedResponse =
             await fetch(
-              `http://localhost:5000/api/user/${userId}/balance`
+              `https://joshpay.onrender.com/api/user/${userId}/balance`
             );
 
           const updatedData =

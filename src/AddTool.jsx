@@ -134,7 +134,7 @@ function AddTool({ user, onNavigate }) {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/add-mobikwik-wallet",
+        "https://joshpay.onrender.com/api/add-mobikwik-wallet",
         {
           method: "POST",
 

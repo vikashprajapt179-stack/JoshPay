@@ -98,7 +98,7 @@ function Order({ user, order, onNavigate }) {
     const checkStatus = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/order/status/${userId}/${orderNo}`
+          `https://joshpay.onrender.com/api/order/status/${userId}/${orderNo}`
         );
 
         const data = await response.json();
@@ -228,7 +228,7 @@ function Order({ user, order, onNavigate }) {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/order/submit-payment",
+        "https://joshpay.onrender.com/api/order/submit-payment",
         {
           method: "POST",
           headers: {
@@ -316,7 +316,7 @@ function Order({ user, order, onNavigate }) {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/order/cancel",
+        "https://joshpay.onrender.com/api/order/cancel",
         {
           method: "POST",
           headers: {

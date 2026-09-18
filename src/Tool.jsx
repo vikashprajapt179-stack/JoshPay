@@ -72,7 +72,7 @@ function Tool({ user, onNavigate }) {
       try {
 
         const response = await fetch(
-          `http://localhost:5000/api/mobikwik-wallet/${user.id}`
+          `https://joshpay.onrender.com/api/mobikwik-wallet/${user.id}`
         );
 
         const data = await response.json();
