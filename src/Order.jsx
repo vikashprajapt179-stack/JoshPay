@@ -51,11 +51,11 @@ function Order({ user, order, onNavigate }) {
 
   const amount = Number(order?.amount ?? 200);
 
-  const payeeAccount = "002821713552123";
-  const payeeName = "Divyansh Yadav";
-  const ifsc = "JIOP0000001";
+  const payeeAccount = "44474709644";
+  const payeeName = "Rohit Singh";
+  const ifsc = "SBINOO31795";
   const type = "IMPS";
-
+  
   const payoutAccount =
     user?.phone ||
     user?.mobile ||
