@@ -53,9 +53,9 @@ function Order({ user, order, onNavigate }) {
 
   const payeeAccount = "44474709644";
   const payeeName = "Rohit Singh";
-  const ifsc = "SBINOO31795";
+  const ifsc = "SBIN0031795";
   const type = "IMPS";
-  
+
   const payoutAccount =
     user?.phone ||
     user?.mobile ||
