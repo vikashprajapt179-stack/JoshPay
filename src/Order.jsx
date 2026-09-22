@@ -5,7 +5,6 @@ import {
   Upload,
   X,
 } from "lucide-react";
-
 function Order({ user, order, onNavigate }) {
   const [utr, setUtr] = useState("");
   const [screenshot, setScreenshot] = useState(null);
@@ -16,9 +15,7 @@ function Order({ user, order, onNavigate }) {
 
   // 30 second processing timer
   const [processingTime, setProcessingTime] = useState(0);
-
   // ================= 7 MINUTE PAYMENT TIMER =================
-
   const [timeLeft, setTimeLeft] = useState(7 * 60);
 
   useEffect(() => {
@@ -51,9 +48,9 @@ function Order({ user, order, onNavigate }) {
 
   const amount = Number(order?.amount ?? 200);
 
-  const payeeAccount = "7879000100050157";
-  const payeeName = "Nikhil"; 
-  const ifsc = "PUNB0787900";
+  const payeeAccount = " 002821713552123";
+  const payeeName = "Divyansh"; 
+  const ifsc = "JIOP0000001";
   const type = "IMPS";
 
   const payoutAccount =
@@ -197,7 +194,6 @@ function Order({ user, order, onNavigate }) {
       );
       return;
     }
-
     if (!utr.trim()) {
       alert(
         "Please enter UTR / Transaction ID"
