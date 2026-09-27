@@ -1,11 +1,10 @@
-
 import { useEffect, useState } from "react";
 
 function PhoneIcon() {
   return (
     <svg
-      width="40"
-      height="40"
+      width="28"
+      height="28"
       viewBox="0 0 24 24"
       fill="none"
       stroke="#15916c"
@@ -19,8 +18,8 @@ function PhoneIcon() {
 function LockIcon() {
   return (
     <svg
-      width="40"
-      height="40"
+      width="28"
+      height="28"
       viewBox="0 0 24 24"
       fill="none"
       stroke="#15916c"
@@ -35,8 +34,8 @@ function LockIcon() {
 function MailIcon() {
   return (
     <svg
-      width="40"
-      height="40"
+      width="28"
+      height="28"
       viewBox="0 0 24 24"
       fill="none"
       stroke="#15916c"
@@ -401,15 +400,15 @@ function ResetPassword({ onBack }) {
     <div className="min-h-screen bg-[#f5f7fc]">
 
       {/* Header */}
-      <div className="relative flex h-[168px] items-end justify-center bg-white pb-6">
+      <div className="relative flex h-[92px] items-end justify-center bg-white pb-3 sm:h-[168px] sm:pb-6">
         <button
           type="button"
           onClick={onBack}
-          className="absolute bottom-7 left-7 text-[#15916c]"
+          className="absolute bottom-3 left-3 text-[#15916c] sm:bottom-7 sm:left-7"
         >
           <svg
-            width="55"
-            height="55"
+            width="32"
+            height="32"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -420,24 +419,24 @@ function ResetPassword({ onBack }) {
           </svg>
         </button>
 
-        <h1 className="text-[40px] font-bold text-[#129267]">
+        <h1 className="text-[25px] font-bold text-[#129267] sm:text-[40px]">
           Reset Password
         </h1>
       </div>
 
       {/* Form */}
-      <div className="mx-auto w-full max-w-[720px] px-8 pt-9">
+      <div className="mx-auto w-full max-w-[720px] px-4 pt-5 sm:px-8 sm:pt-9">
         <form onSubmit={handleResetPassword}>
 
           {/* Phone */}
-          <div className="flex h-[91px] items-center rounded-[27px] border-2 border-[#cce7df] bg-white px-10">
+          <div className="flex h-[58px] items-center rounded-[18px] border-2 border-[#cce7df] bg-white px-4 sm:h-[91px] sm:rounded-[27px] sm:px-10">
             <PhoneIcon />
 
-            <span className="ml-7 text-[29px] font-bold text-[#15916c]">
+            <span className="ml-3 text-[16px] font-bold text-[#15916c] sm:ml-7 sm:text-[29px]">
               +91
             </span>
 
-            <div className="mx-4 h-9 w-[2px] bg-[#d2d9df]" />
+            <div className="mx-2 h-6 w-[2px] bg-[#d2d9df] sm:mx-4 sm:h-9" />
 
             <input
               type="tel"
@@ -454,12 +453,12 @@ function ResetPassword({ onBack }) {
                 setOtpVerified(false);
                 setMsg91AccessToken("");
               }}
-              className="w-full text-[29px] text-[#15916c] outline-none placeholder:text-[#15916c] disabled:bg-transparent"
+              className="w-full min-w-0 text-[16px] text-[#15916c] outline-none placeholder:text-[#15916c] disabled:bg-transparent sm:text-[29px]"
             />
           </div>
 
           {/* New Password */}
-          <div className="mt-6 flex h-[91px] items-center rounded-[27px] border-2 border-[#cce7df] bg-white px-10">
+          <div className="mt-4 flex h-[58px] items-center rounded-[18px] border-2 border-[#cce7df] bg-white px-4 sm:mt-6 sm:h-[91px] sm:rounded-[27px] sm:px-10">
             <LockIcon />
 
             <input
@@ -467,12 +466,12 @@ function ResetPassword({ onBack }) {
               placeholder="New Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="ml-7 w-full text-[29px] text-[#15916c] outline-none placeholder:text-[#15916c]"
+              className="ml-3 w-full text-[16px] text-[#15916c] outline-none placeholder:text-[#15916c] sm:ml-7 sm:text-[29px]"
             />
           </div>
 
           {/* OTP */}
-          <div className="mt-6 flex h-[91px] items-center rounded-[27px] border-2 border-[#cce7df] bg-white px-10">
+          <div className="mt-4 flex h-[58px] items-center rounded-[18px] border-2 border-[#cce7df] bg-white px-4 sm:mt-6 sm:h-[91px] sm:rounded-[27px] sm:px-10">
             <MailIcon />
 
             <input
@@ -488,7 +487,7 @@ function ResetPassword({ onBack }) {
                 setOtpVerified(false);
                 setMsg91AccessToken("");
               }}
-              className="ml-7 min-w-0 flex-1 text-[29px] text-[#15916c] outline-none placeholder:text-[#15916c]"
+              className="ml-3 min-w-0 flex-1 text-[16px] text-[#15916c] outline-none placeholder:text-[#15916c] sm:ml-7 sm:text-[29px]"
             />
 
             {!otpSent ? (
@@ -496,7 +495,7 @@ function ResetPassword({ onBack }) {
                 type="button"
                 onClick={handleSendOtp}
                 disabled={sendingOtp}
-                className="h-[56px] rounded-[11px] bg-[#7abfa9] px-6 text-[24px] font-bold text-white disabled:opacity-60"
+                className="h-[40px] rounded-[8px] bg-[#7abfa9] px-3 text-[14px] font-bold text-white disabled:opacity-60 sm:h-[56px] sm:rounded-[11px] sm:px-6 sm:text-[24px]"
               >
                 {sendingOtp ? "Sending..." : "Send"}
               </button>
@@ -508,12 +507,12 @@ function ResetPassword({ onBack }) {
                   verifyingOtp ||
                   otp.length !== 4
                 }
-                className="h-[56px] rounded-[11px] bg-[#129267] px-6 text-[24px] font-bold text-white disabled:opacity-60"
+                className="h-[40px] rounded-[8px] bg-[#129267] px-3 text-[14px] font-bold text-white disabled:opacity-60 sm:h-[56px] sm:rounded-[11px] sm:px-6 sm:text-[24px]"
               >
                 {verifyingOtp ? "Checking..." : "Verify"}
               </button>
             ) : (
-              <span className="text-[22px] font-bold text-[#129267]">
+              <span className="text-[14px] font-bold text-[#129267] sm:text-[22px]">
                 ✓ Verified
               </span>
             )}
@@ -525,7 +524,7 @@ function ResetPassword({ onBack }) {
               <button
                 type="button"
                 onClick={handleResendOtp}
-                className="text-[20px] font-semibold text-[#129267]"
+                className="text-[14px] font-semibold text-[#129267] sm:text-[20px]"
               >
                 Resend OTP
               </button>
@@ -536,7 +535,7 @@ function ResetPassword({ onBack }) {
           <button
             type="submit"
             disabled={loading}
-            className="mt-14 h-[91px] w-full rounded-full bg-[#129267] text-[34px] font-bold text-white shadow-md disabled:opacity-60"
+            className="mt-8 h-[54px] w-full rounded-full bg-[#129267] text-[19px] font-bold text-white shadow-md disabled:opacity-60 sm:mt-14 sm:h-[91px] sm:text-[34px]"
           >
             {loading ? "Resetting..." : "Reset Password"}
           </button>

@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 function UserIcon() {
   return (
     <svg
-      width="40"
-      height="40"
+      width="28"
+      height="28"
       viewBox="0 0 24 24"
       fill="none"
       stroke="#15916c"
@@ -20,8 +20,8 @@ function UserIcon() {
 function LockIcon() {
   return (
     <svg
-      width="40"
-      height="40"
+      width="28"
+      height="28"
       viewBox="0 0 24 24"
       fill="none"
       stroke="#15916c"
@@ -36,8 +36,8 @@ function LockIcon() {
 function PhoneIcon() {
   return (
     <svg
-      width="40"
-      height="40"
+      width="28"
+      height="28"
       viewBox="0 0 24 24"
       fill="none"
       stroke="#15916c"
@@ -51,8 +51,8 @@ function PhoneIcon() {
 function MailIcon() {
   return (
     <svg
-      width="40"
-      height="40"
+      width="28"
+      height="28"
       viewBox="0 0 24 24"
       fill="none"
       stroke="#15916c"
@@ -67,8 +67,8 @@ function MailIcon() {
 function LinkIcon() {
   return (
     <svg
-      width="40"
-      height="40"
+      width="28"
+      height="28"
       viewBox="0 0 24 24"
       fill="none"
       stroke="#15916c"
@@ -408,16 +408,16 @@ function Register({ onBack }) {
 
       {/* Header */}
 
-      <div className="relative flex h-[168px] items-end justify-center bg-white pb-6">
+      <div className="relative flex h-[92px] items-end justify-center bg-white pb-3 sm:h-[168px] sm:pb-6">
 
         <button
           type="button"
           onClick={onBack}
-          className="absolute bottom-7 left-7 text-[#15916c]"
+          className="absolute bottom-3 left-3 text-[#15916c] sm:bottom-7 sm:left-7"
         >
           <svg
-            width="55"
-            height="55"
+            width="32"
+            height="32"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -428,20 +428,20 @@ function Register({ onBack }) {
           </svg>
         </button>
 
-        <h1 className="text-[40px] font-bold text-[#129267]">
+        <h1 className="text-[25px] font-bold text-[#129267] sm:text-[40px]">
           Register
         </h1>
       </div>
 
       {/* Form */}
 
-      <div className="mx-auto w-full max-w-[720px] px-8 pt-6">
+      <div className="mx-auto w-full max-w-[720px] px-4 pt-4 sm:px-8 sm:pt-6">
 
         <form onSubmit={handleSignUp}>
 
           {/* User Name */}
 
-          <div className="flex h-[91px] items-center rounded-[27px] border-2 border-[#cce7df] bg-white px-10">
+          <div className="flex h-[58px] items-center rounded-[18px] border-2 border-[#cce7df] bg-white px-4 sm:h-[91px] sm:rounded-[27px] sm:px-10">
 
             <UserIcon />
 
@@ -450,14 +450,14 @@ function Register({ onBack }) {
               placeholder="User Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="ml-7 w-full text-[29px] outline-none placeholder:text-[#98a8bb]"
+              className="ml-3 w-full min-w-0 text-[16px] outline-none placeholder:text-[#98a8bb] sm:ml-7 sm:text-[29px]"
             />
 
           </div>
 
           {/* Password */}
 
-          <div className="mt-6 flex h-[91px] items-center rounded-[27px] border-2 border-[#cce7df] bg-white px-10">
+          <div className="mt-4 flex h-[58px] items-center rounded-[18px] border-2 border-[#cce7df] bg-white px-4 sm:mt-6 sm:h-[91px] sm:rounded-[27px] sm:px-10">
 
             <LockIcon />
 
@@ -466,22 +466,22 @@ function Register({ onBack }) {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="ml-7 w-full text-[29px] outline-none placeholder:text-[#98a8bb]"
+              className="ml-3 w-full min-w-0 text-[16px] outline-none placeholder:text-[#98a8bb] sm:ml-7 sm:text-[29px]"
             />
 
           </div>
 
           {/* Phone */}
 
-          <div className="mt-6 flex h-[91px] items-center rounded-[27px] border-2 border-[#cce7df] bg-white px-10">
+          <div className="mt-4 flex h-[58px] items-center rounded-[18px] border-2 border-[#cce7df] bg-white px-4 sm:mt-6 sm:h-[91px] sm:rounded-[27px] sm:px-10">
 
             <PhoneIcon />
 
-            <span className="ml-7 text-[29px] font-bold text-[#15916c]">
+            <span className="ml-3 text-[16px] font-bold text-[#15916c] sm:ml-7 sm:text-[29px]">
               +91
             </span>
 
-            <div className="mx-4 h-9 w-[2px] bg-[#d2d9df]" />
+            <div className="mx-2 h-6 w-[2px] bg-[#d2d9df] sm:mx-4 sm:h-9" />
 
             <input
               type="tel"
@@ -504,7 +504,7 @@ function Register({ onBack }) {
 
           {/* OTP */}
 
-          <div className="mt-6 flex h-[91px] items-center rounded-[27px] border-2 border-[#cce7df] bg-white px-10">
+          <div className="mt-4 flex h-[58px] items-center rounded-[18px] border-2 border-[#cce7df] bg-white px-4 sm:mt-6 sm:h-[91px] sm:rounded-[27px] sm:px-10">
 
             <MailIcon />
 
@@ -521,7 +521,7 @@ function Register({ onBack }) {
                 setOtpVerified(false);
                 setMsg91AccessToken("");
               }}
-              className="ml-7 min-w-0 flex-1 text-[29px] outline-none placeholder:text-[#98a8bb]"
+              className="ml-3 min-w-0 flex-1 text-[16px] outline-none placeholder:text-[#98a8bb] sm:ml-7 sm:text-[29px]"
             />
 
             {!otpSent ? (
@@ -529,7 +529,7 @@ function Register({ onBack }) {
                 type="button"
                 onClick={handleSendOtp}
                 disabled={sendingOtp}
-                className="h-[56px] rounded-[11px] bg-[#7abfa9] px-6 text-[24px] font-bold text-white disabled:opacity-60"
+                className="h-[40px] rounded-[9px] bg-[#7abfa9] px-3 text-[14px] font-bold text-white disabled:opacity-60 sm:h-[56px] sm:px-6 sm:text-[24px]"
               >
                 {sendingOtp ? "Sending..." : "Send"}
               </button>
@@ -538,7 +538,7 @@ function Register({ onBack }) {
                 type="button"
                 onClick={handleVerifyOtp}
                 disabled={verifyingOtp || otpVerified}
-                className="h-[56px] rounded-[11px] bg-[#129267] px-6 text-[24px] font-bold text-white disabled:opacity-60"
+                className="h-[40px] rounded-[9px] bg-[#129267] px-3 text-[14px] font-bold text-white disabled:opacity-60 sm:h-[56px] sm:px-6 sm:text-[24px]"
               >
                 {otpVerified
                   ? "Verified"
@@ -558,7 +558,7 @@ function Register({ onBack }) {
               <button
                 type="button"
                 onClick={handleResendOtp}
-                className="text-[20px] font-semibold text-[#129267]"
+                className="text-[14px] font-semibold text-[#129267] sm:text-[20px]"
               >
                 Resend OTP
               </button>
@@ -568,7 +568,7 @@ function Register({ onBack }) {
 
           {/* Invite Code */}
 
-          <div className="mt-6 flex h-[91px] items-center rounded-[27px] border-2 border-[#cce7df] bg-white px-10">
+          <div className="mt-4 flex h-[58px] items-center rounded-[18px] border-2 border-[#cce7df] bg-white px-4 sm:mt-6 sm:h-[91px] sm:rounded-[27px] sm:px-10">
 
             <LinkIcon />
 
@@ -579,7 +579,7 @@ function Register({ onBack }) {
               onChange={(e) =>
                 setInviteCode(e.target.value)
               }
-              className="ml-7 w-full text-[29px] outline-none placeholder:text-[#98a8bb]"
+              className="ml-3 w-full min-w-0 text-[16px] outline-none placeholder:text-[#98a8bb] sm:ml-7 sm:text-[29px]"
             />
 
           </div>
@@ -589,7 +589,7 @@ function Register({ onBack }) {
           <button
             type="submit"
             disabled={loading}
-            className="mt-9 h-[91px] w-full rounded-full bg-[#129267] text-[34px] font-bold text-white shadow-md disabled:opacity-60"
+            className="mt-6 h-[54px] w-full rounded-full bg-[#129267] text-[19px] font-bold text-white shadow-md disabled:opacity-60 sm:mt-9 sm:h-[91px] sm:text-[34px]"
           >
             {loading
               ? "Creating Account..."

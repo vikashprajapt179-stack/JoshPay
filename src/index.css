@@ -1,122 +1,55 @@
-@media (max-width: 640px) {
+@import "tailwindcss";
 
-  .auth-container {
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  background: #f5f7fc;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+button {
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  html,
+  body {
     width: 100%;
     max-width: 100%;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    overflow-x: hidden;
   }
 
-  .auth-page .auth-container {
-    padding-top: 12px;
-  }
-
-  /* Logo */
-  .auth-page .auth-container img {
-    width: min(180px, 55vw) !important;
-    height: auto !important;
-    max-height: 180px;
-  }
-
-  /* Form */
-  .auth-page form {
-    margin-top: 24px !important;
-  }
-
-  .auth-page input {
-    min-width: 0;
-    font-size: 15px !important;
-  }
-
-  .auth-page input::placeholder {
-    font-size: 15px;
-  }
-
-  /* Input boxes */
-  .auth-page form > div[class*="h-[85px]"],
-  .auth-page form > div[class*="h-[91px]"] {
-    height: 54px !important;
-    padding-left: 14px !important;
-    padding-right: 10px !important;
-    border-radius: 14px !important;
-  }
-
-  .auth-page form > div[class*="h-[85px]"] svg,
-  .auth-page form > div[class*="h-[91px]"] svg {
-    width: 22px;
-    height: 22px;
-  }
-
-  .auth-page form > div[class*="h-[85px]"] input,
-  .auth-page form > div[class*="h-[91px]"] input {
-    margin-left: 8px !important;
-  }
-
-  .auth-page form > div[class*="h-[91px]"] > span {
-    margin-left: 8px !important;
-    font-size: 15px !important;
-  }
-
-  /* Header */
-  .auth-page > div:first-child {
-    height: 70px !important;
-    padding-bottom: 8px !important;
-  }
-
-  .auth-page > div:first-child h1 {
-    font-size: 21px !important;
-  }
-
-  .auth-page > div:first-child button {
-    left: 10px !important;
-    bottom: 10px !important;
-  }
-
-  .auth-page > div:first-child button svg {
-    width: 28px;
-    height: 28px;
-  }
-
-  /* Submit button */
-  .auth-page button[type="submit"] {
-    height: 52px !important;
-    font-size: 17px !important;
-  }
-
-  /* Small buttons */
-  .auth-page form button[type="button"] {
-    font-size: 13px !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    height: 36px !important;
-  }
-
-  /* Text */
-  .auth-page form > div[class*="text-[24px]"],
-  .auth-page form > div[class*="text-[23px]"] {
-    font-size: 14px !important;
-  }
-
-  .auth-page .text-\[20px\] {
-    font-size: 13px !important;
-  }
-
-  /* OTP */
-  .auth-page .rounded-\[28px\] {
-    padding: 14px !important;
-    border-radius: 14px !important;
-  }
-
-  .auth-page h2 {
-    font-size: 20px !important;
-    line-height: 1.25;
-  }
-
-  .auth-page h3 {
-    font-size: 17px !important;
-  }
-
-  .auth-page .rounded-\[28px\] input {
-    font-size: 16px !important;
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 }

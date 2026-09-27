@@ -18,8 +18,8 @@ import AdminPanel from "./AdminPanel";
 function UserIcon() {
   return (
     <svg
-      width="38"
-      height="38"
+      width="26"
+      height="26"
       viewBox="0 0 24 24"
       fill="none"
       stroke="#333"
@@ -35,8 +35,8 @@ function UserIcon() {
 function LockIcon() {
   return (
     <svg
-      width="38"
-      height="38"
+      width="26"
+      height="26"
       viewBox="0 0 24 24"
       fill="none"
       stroke="#333"
@@ -51,7 +51,7 @@ function LockIcon() {
 function CheckIcon({ checked }) {
   return (
     <span
-      className={`flex h-7 w-7 items-center justify-center rounded-full border-2 text-lg font-bold ${
+      className={`flex h-5 w-5 items-center justify-center rounded-full border-2 text-sm font-bold sm:h-7 sm:w-7 sm:text-lg ${
         checked
           ? "border-[#7acb61] bg-[#7acb61] text-white"
           : "border-[#999] bg-white text-transparent"
@@ -342,18 +342,18 @@ function App() {
             <img
               src="/logo.png"
               alt="Josh pay"
-              className="h-[345px] w-[345px] object-contain"
+              className="h-[200px] w-[200px] object-contain sm:h-[300px] sm:w-[300px]"
             />
           </div>
 
           {/* LOGIN FORM */}
           <form
             onSubmit={handleLogin}
-            className="mt-24"
+            className="mt-8 sm:mt-24"
           >
 
             {/* PHONE */}
-            <div className="flex h-[85px] items-center rounded-full border-2 border-[#d8eee7] bg-white px-8">
+            <div className="flex h-[56px] items-center rounded-full border-2 border-[#d8eee7] bg-white px-4 sm:h-[85px] sm:px-8">
 
               <UserIcon />
 
@@ -370,13 +370,13 @@ function App() {
                     )
                   )
                 }
-                className="ml-6 w-full bg-transparent text-[36px] outline-none placeholder:text-[#cecece]"
+                className="ml-3 min-w-0 w-full bg-transparent text-[16px] outline-none placeholder:text-[#cecece] sm:ml-6 sm:text-[36px]"
               />
 
             </div>
 
             {/* PASSWORD */}
-            <div className="mt-7 flex h-[85px] items-center rounded-full border-2 border-[#d8eee7] bg-white px-8">
+            <div className="mt-4 flex h-[56px] items-center rounded-full border-2 border-[#d8eee7] bg-white px-4 sm:mt-7 sm:h-[85px] sm:px-8">
 
               <LockIcon />
 
@@ -387,13 +387,13 @@ function App() {
                 onChange={(e) =>
                   setPassword(e.target.value)
                 }
-                className="ml-6 w-full bg-transparent text-[36px] outline-none placeholder:text-[#cecece]"
+                className="ml-3 min-w-0 w-full bg-transparent text-[16px] outline-none placeholder:text-[#cecece] sm:ml-6 sm:text-[36px]"
               />
 
             </div>
 
             {/* REGISTER / REMEMBER */}
-            <div className="mt-7 flex items-center justify-between px-2 text-[24px] text-[#168c6b]">
+            <div className="mt-5 flex items-center justify-between px-1 text-[15px] text-[#168c6b] sm:mt-7 sm:px-2 sm:text-[24px]">
 
               <button
                 type="button"
@@ -431,9 +431,9 @@ function App() {
             </div>
 
             {/* PRIVACY */}
-            <div className="mt-16 flex justify-center">
+            <div className="mt-8 flex justify-center sm:mt-16">
 
-              <label className="flex cursor-pointer items-center text-[23px] text-[#168c6b]">
+              <label className="flex cursor-pointer items-center text-[14px] text-[#168c6b] sm:text-[23px]">
 
                 <input
                   type="checkbox"
@@ -466,7 +466,7 @@ function App() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-5 h-[88px] w-full rounded-full bg-[#129267] text-[35px] font-bold text-white shadow-md disabled:opacity-70"
+              className="mt-5 h-[54px] w-full rounded-full bg-[#129267] text-[19px] font-bold text-white shadow-md disabled:opacity-70 sm:h-[88px] sm:text-[35px]"
             >
               {loading
                 ? "Signing In..."
@@ -478,7 +478,7 @@ function App() {
 
               <button
                 type="button"
-                className="text-[24px] text-[#168c6b] underline"
+                className="text-[16px] text-[#168c6b] underline sm:text-[24px]"
                 onClick={() =>
                   setPage("reset")
                 }
@@ -490,7 +490,7 @@ function App() {
 
           </form>
 
-          <div className="mt-48 pb-5 text-right text-[20px] text-[#8793a5]">
+          <div className="mt-16 pb-5 text-right text-[13px] text-[#8793a5] sm:mt-48 sm:text-[20px]">
             v1.0.2
           </div>
 
