@@ -42,51 +42,38 @@ function Statistics({ user, onNavigate }) {
 
         const data = await response.json();
 
-        console.log(
-          "Statistics From Database:",
-          data
-        );
+        console.log("Statistics From Database:", data);
 
         if (!response.ok || !data.success) {
           throw new Error(
-            data.message ||
-              "Unable to load statistics"
+            data.message || "Unable to load statistics"
           );
         }
 
-        const transactions =
-          Array.isArray(data.transactions)
-            ? data.transactions
-            : [];
+        const transactions = Array.isArray(data.transactions)
+          ? data.transactions
+          : [];
 
         // =================================================
         // IN PROCESS PAYMENTS
         // =================================================
 
-        const processingPayments =
-          transactions.filter(
-            (tx) =>
-              tx.type === "Payment" &&
-              tx.status === "Processing"
-          );
+        const processingPayments = transactions.filter(
+          (tx) =>
+            tx.type === "Payment" &&
+            tx.status === "Processing"
+        );
 
-        const inProcessAmount =
-          processingPayments.reduce(
-            (total, tx) =>
-              total +
-              Number(tx.amount || 0),
-            0
-          );
+        const inProcessAmount = processingPayments.reduce(
+          (total, tx) => total + Number(tx.amount || 0),
+          0
+        );
 
-        const inProcessOrders =
-          processingPayments.length;
+        const inProcessOrders = processingPayments.length;
 
         // =================================================
         // SELL
         // =================================================
-        // Current server.js does not have a separate
-        // "sell" field, so keep it at 0 instead of
-        // showing a fake hardcoded amount.
 
         const sell = 0;
 
@@ -95,35 +82,20 @@ function Statistics({ user, onNavigate }) {
         // =================================================
 
         setStats({
-          balance: Number(
-            data.balance || 0
-          ),
-
-          deposit: Number(
-            data.totalDeposit || 0
-          ),
-
-          commission: Number(
-            data.bonus || 0
-          ),
-
+          balance: Number(data.balance || 0),
+          deposit: Number(data.totalDeposit || 0),
+          commission: Number(data.bonus || 0),
           sell,
-
           inProcessAmount,
-
           inProcessOrders,
         });
       } catch (error) {
-        console.error(
-          "Statistics loading error:",
-          error
-        );
+        console.error("Statistics loading error:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    // Load immediately
     loadStatistics();
 
     // Update every 5 seconds
@@ -140,13 +112,9 @@ function Statistics({ user, onNavigate }) {
   // ESTIMATED INCOME
   // =====================================================
 
-  const estimatedIncome =
-    Number(
-      (
-        stats.inProcessAmount *
-        0.045
-      ).toFixed(2)
-    );
+  const estimatedIncome = Number(
+    (stats.inProcessAmount * 0.045).toFixed(2)
+  );
 
   // =====================================================
   // DATE
@@ -160,46 +128,43 @@ function Statistics({ user, onNavigate }) {
     `${today.getFullYear()}`;
 
   return (
-    <div className="min-h-screen bg-[#f7f7f7] pb-[105px]">
+    <div className="min-h-screen w-full overflow-x-hidden bg-[#f7f7f7] pb-[90px] sm:pb-[105px]">
 
-      {/* Header */}
+      {/* ================= HEADER ================= */}
 
-      <div className="px-5 pt-10 pb-8 text-center">
-
-        <h1 className="text-[38px] font-bold text-[#07865f]">
+      <div className="px-4 pt-6 pb-5 text-center sm:px-5 sm:pt-10 sm:pb-8">
+        <h1 className="text-[28px] font-bold text-[#07865f] sm:text-[38px]">
           Statistics
         </h1>
-
       </div>
 
-      {/* Main Card */}
+      {/* ================= MAIN CARD ================= */}
 
-      <div className="mx-5 rounded-[22px] bg-white px-5 py-5 shadow-sm">
+      <div className="mx-3 rounded-[18px] bg-white px-3 py-4 shadow-sm sm:mx-5 sm:rounded-[22px] sm:px-5 sm:py-5">
 
         {/* Statistics Heading */}
 
-        <div className="mb-5 flex items-center gap-3">
+        <div className="mb-5 flex min-w-0 items-center gap-2 sm:gap-3">
+          <div className="h-6 w-1.5 shrink-0 rounded-full bg-[#08a875] sm:h-7 sm:w-2" />
 
-          <div className="h-7 w-2 rounded-full bg-[#08a875]" />
-
-          <h2 className="text-[28px] font-medium text-gray-900">
+          <h2 className="text-[22px] font-medium text-gray-900 sm:text-[28px]">
             Statistics
           </h2>
 
-          <span className="text-[19px] text-gray-400">
+          <span className="min-w-0 text-[13px] text-gray-400 sm:text-[19px]">
             ({formattedDate})
           </span>
-
         </div>
 
-        {/* Statistics Grid */}
+        {/* ================= STATISTICS GRID ================= */}
 
-        <div className="grid grid-cols-2 gap-x-6 gap-y-7">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:gap-x-6 sm:gap-y-7">
 
           {/* BALANCE */}
 
           <StatItem
-            icon={<CreditCard size={27} />}
+            icon={<CreditCard size={21} className="sm:hidden" />}
+            desktopIcon={<CreditCard size={27} />}
             iconBg="bg-[#6389e9]"
             title="Balance"
             amount={
@@ -212,7 +177,8 @@ function Statistics({ user, onNavigate }) {
           {/* SELL */}
 
           <StatItem
-            icon={<ArrowUpRight size={28} />}
+            icon={<ArrowUpRight size={22} className="sm:hidden" />}
+            desktopIcon={<ArrowUpRight size={28} />}
             iconBg="bg-[#f5bd16]"
             title="Sell"
             amount={
@@ -225,7 +191,8 @@ function Statistics({ user, onNavigate }) {
           {/* DEPOSIT */}
 
           <StatItem
-            icon={<Wallet size={28} />}
+            icon={<Wallet size={22} className="sm:hidden" />}
+            desktopIcon={<Wallet size={28} />}
             iconBg="bg-[#10b98c]"
             title="Deposit"
             amount={
@@ -238,7 +205,8 @@ function Statistics({ user, onNavigate }) {
           {/* COMMISSION */}
 
           <StatItem
-            icon={<RefreshCcw size={28} />}
+            icon={<RefreshCcw size={22} className="sm:hidden" />}
+            desktopIcon={<RefreshCcw size={28} />}
             iconBg="bg-[#f35b70]"
             title="Commission"
             amount={
@@ -247,42 +215,38 @@ function Statistics({ user, onNavigate }) {
                 : `₹ ${stats.commission.toFixed(2)}`
             }
           />
-
         </div>
 
-        {/* Payment Heading */}
+        {/* ================= PAYMENT HEADING ================= */}
 
-        <div className="mt-8 mb-5 flex items-center gap-3">
+        <div className="mt-7 mb-4 flex items-center gap-2 sm:mt-8 sm:mb-5 sm:gap-3">
+          <div className="h-6 w-1.5 shrink-0 rounded-full bg-[#08a875] sm:h-7 sm:w-2" />
 
-          <div className="h-7 w-2 rounded-full bg-[#08a875]" />
-
-          <h2 className="text-[28px] font-medium text-gray-900">
+          <h2 className="text-[22px] font-medium text-gray-900 sm:text-[28px]">
             Payment
           </h2>
-
         </div>
 
-        {/* Payment Card */}
+        {/* ================= PAYMENT CARD ================= */}
 
-        <div className="rounded-[20px] bg-[#f5f7fa] p-4">
+        <div className="rounded-[16px] bg-[#f5f7fa] p-3 sm:rounded-[20px] sm:p-4">
 
           {/* Exchange Rate */}
 
-          <div className="flex items-center justify-between rounded-xl bg-[#d8eee7] px-3 py-3 text-[#148b69]">
+          <div className="flex items-center justify-between gap-2 rounded-xl bg-[#d8eee7] px-3 py-3 text-[#148b69] sm:px-3 sm:py-3">
 
-            <span className="text-[20px] font-medium">
+            <span className="min-w-0 text-[13px] font-medium leading-5 sm:text-[20px]">
               Real Time Exchange Rates (INR/USDT)
             </span>
 
-            <span className="text-[20px] font-semibold">
+            <span className="shrink-0 text-[17px] font-semibold sm:text-[20px]">
               110
             </span>
-
           </div>
 
           {/* Payment Details */}
 
-          <div className="mt-3 grid grid-cols-2 gap-3">
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3">
 
             {/* IN PROCESS AMOUNT */}
 
@@ -302,9 +266,7 @@ function Statistics({ user, onNavigate }) {
               amount={
                 loading
                   ? "..."
-                  : String(
-                      stats.inProcessOrders
-                    )
+                  : String(stats.inProcessOrders)
               }
             />
 
@@ -325,77 +287,74 @@ function Statistics({ user, onNavigate }) {
                   : `₹ ${estimatedIncome.toFixed(2)}`
               }
             />
-
           </div>
-
         </div>
-
       </div>
 
-      {/* Closed Selling Button */}
+      {/* ================= CLOSED SELLING BUTTON ================= */}
 
-      <div className="mx-14 mt-9">
-
+      <div className="mx-4 mt-7 sm:mx-14 sm:mt-9">
         <button
-          onClick={() =>
-            onNavigate("payment")
-          }
-          className="w-full rounded-full bg-[#f8c52d] py-5 text-[27px] font-bold text-white shadow-md"
+          type="button"
+          onClick={() => onNavigate("payment")}
+          className="w-full rounded-full bg-[#f8c52d] py-3.5 text-[18px] font-bold text-white shadow-md transition active:scale-[0.98] sm:py-5 sm:text-[27px]"
         >
           Closed Selling
         </button>
-
       </div>
 
-      {/* Chat Icon */}
+      {/* ================= CHAT ICON ================= */}
 
       <button
-        onClick={() =>
-          onNavigate("message")
-        }
-        className="fixed bottom-[145px] right-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#c9f5d0] text-3xl shadow-sm"
+        type="button"
+        onClick={() => onNavigate("message")}
+        className="fixed bottom-[82px] right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#c9f5d0] text-2xl shadow-sm sm:bottom-[145px] sm:right-5 sm:h-16 sm:w-16 sm:text-3xl"
       >
         🤖
       </button>
 
-      {/* Bottom Navigation */}
+      {/* ================= BOTTOM NAVIGATION ================= */}
 
       <BottomNavigation
         active="Statistics"
         onNavigate={onNavigate}
       />
-
     </div>
   );
 }
 
 function StatItem({
   icon,
+  desktopIcon,
   iconBg,
   title,
   amount,
 }) {
   return (
-    <div>
+    <div className="min-w-0">
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
 
         <div
-          className={`flex h-12 w-12 items-center justify-center rounded-xl text-white ${iconBg}`}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white sm:h-12 sm:w-12 ${iconBg}`}
         >
-          {icon}
+          <span className="sm:hidden">
+            {icon}
+          </span>
+
+          <span className="hidden sm:block">
+            {desktopIcon}
+          </span>
         </div>
 
-        <span className="text-[20px] text-gray-400">
+        <span className="min-w-0 truncate text-[14px] text-gray-400 sm:text-[20px]">
           {title}
         </span>
-
       </div>
 
-      <p className="mt-3 text-center text-[27px] font-bold text-gray-900">
+      <p className="mt-2 truncate text-center text-[19px] font-bold text-gray-900 sm:mt-3 sm:text-[27px]">
         {amount}
       </p>
-
     </div>
   );
 }
@@ -405,24 +364,22 @@ function PaymentItem({
   amount,
 }) {
   return (
-    <div className="rounded-2xl bg-white px-3 py-3 shadow-sm">
+    <div className="min-w-0 rounded-[14px] bg-white px-2.5 py-3 shadow-sm sm:rounded-2xl sm:px-3 sm:py-3">
 
-      <div className="flex items-start gap-2">
+      <div className="flex min-w-0 items-start gap-1.5 sm:gap-2">
 
-        <span className="mt-1 text-[#f1ca4b]">
+        <span className="mt-1 shrink-0 text-[11px] text-[#f1ca4b] sm:text-base">
           ◉
         </span>
 
-        <span className="text-[18px] leading-6 text-gray-400">
+        <span className="min-w-0 text-[13px] leading-5 text-gray-400 sm:text-[18px] sm:leading-6">
           {title}
         </span>
-
       </div>
 
-      <p className="mt-1 text-center text-[25px] font-bold text-gray-900">
+      <p className="mt-1 truncate text-center text-[18px] font-bold text-gray-900 sm:text-[25px]">
         {amount}
       </p>
-
     </div>
   );
 }

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import BottomNavigation from "./BottomNavigation";
 
 function Payment({ user, onNavigate }) {
-  const [selectedTab, setSelectedTab] = useState("Top Picks");
+  const [selectedTab, setSelectedTab] =
+    useState("Top Picks");
 
   const [balance, setBalance] = useState(
     Number(user?.balance ?? 200)
@@ -40,25 +41,29 @@ function Payment({ user, onNavigate }) {
     })),
   ];
 
-  const filteredPayments = payments.filter((payment) => {
-    if (selectedTab === "Top Picks") return true;
+  const filteredPayments = payments.filter(
+    (payment) => {
+      if (selectedTab === "Top Picks") {
+        return true;
+      }
 
-    if (selectedTab === "500-1999") {
-      return (
-        payment.amount >= 500 &&
-        payment.amount <= 1999
-      );
+      if (selectedTab === "500-1999") {
+        return (
+          payment.amount >= 500 &&
+          payment.amount <= 1999
+        );
+      }
+
+      if (selectedTab === "2000-4999") {
+        return (
+          payment.amount >= 2000 &&
+          payment.amount <= 4999
+        );
+      }
+
+      return true;
     }
-
-    if (selectedTab === "2000-4999") {
-      return (
-        payment.amount >= 2000 &&
-        payment.amount <= 4999
-      );
-    }
-
-    return true;
-  });
+  );
 
   const loadBalance = async () => {
     if (!userId) return;
@@ -95,12 +100,15 @@ function Payment({ user, onNavigate }) {
         transactions
           .filter(
             (transaction) =>
-              transaction.status === "Processing"
+              transaction.status ===
+              "Processing"
           )
           .reduce(
             (total, transaction) =>
               total +
-              Number(transaction.amount || 0),
+              Number(
+                transaction.amount || 0
+              ),
             0
           );
 
@@ -108,7 +116,9 @@ function Payment({ user, onNavigate }) {
 
       localStorage.setItem(
         "okpayWallet",
-        String(Number(data.balance ?? 0))
+        String(
+          Number(data.balance ?? 0)
+        )
       );
     } catch (error) {
       console.error(
@@ -123,12 +133,12 @@ function Payment({ user, onNavigate }) {
 
     if (!userId) return;
 
+    // 5 sec polling instead of 1 sec
     const interval = setInterval(() => {
       loadBalance();
-    }, 1000);
+    }, 5000);
 
-    return () =>
-      clearInterval(interval);
+    return () => clearInterval(interval);
   }, [userId]);
 
   const handleClaim = (payment) => {
@@ -136,49 +146,53 @@ function Payment({ user, onNavigate }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f7fb]">
+    <div className="min-h-screen w-full overflow-x-hidden bg-[#f5f7fb]">
 
-      <div className="pb-[125px]">
+      <div className="pb-[90px] sm:pb-[125px]">
 
-        {/* TITLE */}
+        {/* ================= TITLE ================= */}
 
-        <div className="pt-5 text-center">
-          <h1 className="text-[30px] font-extrabold text-[#078b5d]">
+        <div className="pt-4 sm:pt-5 text-center">
+          <h1 className="text-[25px] sm:text-[30px] font-extrabold text-[#078b5d]">
             Payment
           </h1>
         </div>
 
-        {/* CASHBACK CARD */}
+        {/* ================= CASHBACK CARD ================= */}
 
-        <div className="relative mx-[23px] mt-[45px] h-[442px] overflow-hidden rounded-[25px] bg-gradient-to-br from-[#159f6c] to-[#0c9b68] shadow-lg">
+        <div className="relative mx-4 sm:mx-[23px] mt-6 sm:mt-[45px] min-h-[300px] sm:h-[442px] overflow-hidden rounded-[20px] sm:rounded-[25px] bg-gradient-to-br from-[#159f6c] to-[#0c9b68] shadow-lg">
 
-          <div className="absolute -right-[45px] -top-[25px] h-[190px] w-[190px] rounded-full bg-[#f0c932]" />
+          {/* Background circles */}
 
-          <div className="absolute -right-[70px] top-[38px] h-[250px] w-[250px] rounded-full bg-[#477fdb]" />
+          <div className="absolute -right-[35px] sm:-right-[45px] -top-[20px] sm:-top-[25px] h-[120px] w-[120px] sm:h-[190px] sm:w-[190px] rounded-full bg-[#f0c932]" />
 
-          <div className="relative p-[47px]">
+          <div className="absolute -right-[45px] sm:-right-[70px] top-[25px] sm:top-[38px] h-[170px] w-[170px] sm:h-[250px] sm:w-[250px] rounded-full bg-[#477fdb]" />
 
-            <p className="text-[25px] text-white">
+          <div className="relative p-5 sm:p-[47px]">
+
+            <p className="text-[18px] sm:text-[25px] text-white">
               Cashback
             </p>
 
-            <p className="mt-1 text-[72px] font-extrabold leading-none text-white">
+            <p className="mt-1 text-[48px] sm:text-[72px] font-extrabold leading-none text-white">
               4.5%
             </p>
 
-            <div className="mt-[37px] flex gap-[13px]">
+            {/* Balance + Reward/Pending */}
+
+            <div className="mt-6 sm:mt-[37px] flex gap-2.5 sm:gap-[13px]">
 
               {/* BALANCE */}
 
-              <div className="h-[190px] flex-[5] rounded-[11px] border border-white/35 bg-white/10 p-3">
+              <div className="min-h-[145px] sm:h-[190px] flex-[5] rounded-[10px] sm:rounded-[11px] border border-white/35 bg-white/10 p-2.5 sm:p-3">
 
-                <p className="text-[15px] font-medium text-white">
+                <p className="text-[12px] sm:text-[15px] font-medium text-white">
                   Balance
                 </p>
 
-                <div className="flex h-[145px] items-center justify-center">
+                <div className="flex min-h-[105px] sm:h-[145px] items-center justify-center">
 
-                  <p className="text-[29px] font-bold text-white">
+                  <p className="text-[20px] sm:text-[29px] font-bold text-white break-all text-center">
                     ₹{balance.toFixed(2)}
                   </p>
 
@@ -188,19 +202,19 @@ function Payment({ user, onNavigate }) {
 
               {/* RIGHT */}
 
-              <div className="flex flex-[4] flex-col gap-[14px]">
+              <div className="flex flex-[4] flex-col gap-2.5 sm:gap-[14px]">
 
                 {/* REWARD */}
 
-                <div className="h-[89px] rounded-[11px] border border-white/35 bg-white/10 p-3">
+                <div className="min-h-[67px] sm:h-[89px] rounded-[10px] sm:rounded-[11px] border border-white/35 bg-white/10 p-2.5 sm:p-3">
 
-                  <p className="text-[15px] font-medium text-white">
+                  <p className="text-[12px] sm:text-[15px] font-medium text-white">
                     Reward
                   </p>
 
-                  <div className="flex h-[52px] items-center justify-center">
+                  <div className="flex h-[40px] sm:h-[52px] items-center justify-center">
 
-                    <p className="text-[29px] font-bold text-white">
+                    <p className="text-[19px] sm:text-[29px] font-bold text-white break-all">
                       ₹{reward.toFixed(2)}
                     </p>
 
@@ -210,15 +224,15 @@ function Payment({ user, onNavigate }) {
 
                 {/* PENDING */}
 
-                <div className="h-[89px] rounded-[11px] border border-white/35 bg-white/10 p-3">
+                <div className="min-h-[67px] sm:h-[89px] rounded-[10px] sm:rounded-[11px] border border-white/35 bg-white/10 p-2.5 sm:p-3">
 
-                  <p className="text-[15px] font-medium text-white">
+                  <p className="text-[12px] sm:text-[15px] font-medium text-white">
                     Pending
                   </p>
 
-                  <div className="flex h-[52px] items-center justify-center">
+                  <div className="flex h-[40px] sm:h-[52px] items-center justify-center">
 
-                    <p className="text-[29px] font-bold text-white">
+                    <p className="text-[19px] sm:text-[29px] font-bold text-white break-all">
                       ₹{pending.toFixed(2)}
                     </p>
 
@@ -234,38 +248,38 @@ function Payment({ user, onNavigate }) {
 
         </div>
 
-        {/* WARNING */}
+        {/* ================= WARNING ================= */}
 
-        <div className="mx-[45px] mt-6 flex items-start">
+        <div className="mx-5 sm:mx-[45px] mt-4 sm:mt-6 flex items-start gap-1.5 sm:gap-2">
 
-          <span className="text-[20px] text-[#3a9d78]">
+          <span className="shrink-0 text-[17px] sm:text-[20px] text-[#3a9d78]">
             ⚠
           </span>
 
-          <p className="flex-1 text-center text-[17px] font-medium leading-[1.35] text-[#298c70]">
+          <p className="flex-1 text-center text-[12px] sm:text-[17px] font-medium leading-[1.35] text-[#298c70]">
             Please use Freecharge or Mobikwik or Paytm wallet for payment!
           </p>
 
         </div>
 
-        {/* TABS */}
+        {/* ================= TABS ================= */}
 
-        <div className="mt-[27px] overflow-x-auto">
+        <div className="mt-5 sm:mt-[27px] overflow-x-auto scrollbar-hide">
 
-          <div className="flex w-max gap-[13px] px-[23px]">
+          <div className="flex w-max gap-2.5 sm:gap-[13px] px-4 sm:px-[23px]">
 
             {tabs.map((tab) => {
-
               const selected =
                 selectedTab === tab;
 
               return (
                 <button
                   key={tab}
+                  type="button"
                   onClick={() =>
                     setSelectedTab(tab)
                   }
-                  className={`h-[61px] rounded-full px-[27px] text-[20px] transition ${
+                  className={`h-[45px] sm:h-[61px] whitespace-nowrap rounded-full px-5 sm:px-[27px] text-[14px] sm:text-[20px] transition ${
                     selected
                       ? "bg-[#079665] font-semibold text-white"
                       : "bg-[#eff0f3] text-[#444444]"
@@ -274,54 +288,53 @@ function Payment({ user, onNavigate }) {
                   {tab}
                 </button>
               );
-
             })}
 
           </div>
 
         </div>
 
-        {/* PAYMENT LIST */}
+        {/* ================= PAYMENT LIST ================= */}
 
-        <div className="mt-[28px] px-6">
+        <div className="mt-5 sm:mt-[28px] px-4 sm:px-6">
 
           {filteredPayments.map(
             (payment, index) => (
 
               <div
                 key={index}
-                className="mb-[27px] rounded-[17px] bg-white px-[37px] py-[21px] shadow-sm"
+                className="mb-4 sm:mb-[27px] rounded-[15px] sm:rounded-[17px] bg-white px-4 sm:px-[37px] py-4 sm:py-[21px] shadow-sm"
               >
 
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start justify-between gap-3">
 
                   {/* LEFT */}
 
-                  <div>
+                  <div className="min-w-0">
 
-                    <p className="text-[26px] font-extrabold text-[#078e62]">
+                    <p className="text-[20px] sm:text-[26px] font-extrabold text-[#078e62]">
                       INR
                     </p>
 
-                    <div className="mt-[10px] flex items-center">
+                    <div className="mt-2 sm:mt-[10px] flex items-center flex-wrap">
 
-                      <span className="text-[18px] text-[#555]">
+                      <span className="text-[13px] sm:text-[18px] text-[#555]">
                         Amount:
                       </span>
 
-                      <span className="ml-1 text-[19px] font-bold text-[#079665]">
+                      <span className="ml-1 text-[14px] sm:text-[19px] font-bold text-[#079665]">
                         ₹{payment.amount}
                       </span>
 
                     </div>
 
-                    <div className="mt-[6px] flex items-center">
+                    <div className="mt-1.5 sm:mt-[6px] flex items-center">
 
-                      <span className="text-[18px] text-[#444]">
+                      <span className="text-[13px] sm:text-[18px] text-[#444]">
                         Income:
                       </span>
 
-                      <span className="ml-1 text-[19px] font-bold text-[#e64d55]">
+                      <span className="ml-1 text-[14px] sm:text-[19px] font-bold text-[#e64d55]">
                         {payment.income}
                       </span>
 
@@ -331,15 +344,15 @@ function Payment({ user, onNavigate }) {
 
                   {/* RIGHT */}
 
-                  <div className="flex flex-col items-end">
+                  <div className="flex shrink-0 flex-col items-end">
 
-                    <div className="flex items-center">
+                    <div className="flex items-center max-w-full">
 
-                      <span className="rounded-[5px] bg-[#e1f4ec] px-[10px] py-1 text-[15px] font-bold text-[#248d69]">
+                      <span className="rounded-[4px] sm:rounded-[5px] bg-[#e1f4ec] px-2 sm:px-[10px] py-1 text-[11px] sm:text-[15px] font-bold text-[#248d69]">
                         Code
                       </span>
 
-                      <span className="ml-2 text-[17px] font-medium text-[#222]">
+                      <span className="ml-1.5 sm:ml-2 max-w-[75px] sm:max-w-none truncate text-[12px] sm:text-[17px] font-medium text-[#222]">
                         {payment.code}
                       </span>
 
@@ -348,10 +361,11 @@ function Payment({ user, onNavigate }) {
                     {/* CLAIM */}
 
                     <button
+                      type="button"
                       onClick={() =>
                         handleClaim(payment)
                       }
-                      className="mt-7 rounded-full bg-[#079665] px-[27px] py-[10px] text-[17px] font-bold text-white shadow-md transition hover:bg-[#067f55]"
+                      className="mt-4 sm:mt-7 rounded-full bg-[#079665] px-5 sm:px-[27px] py-2 sm:py-[10px] text-[13px] sm:text-[17px] font-bold text-white shadow-md transition hover:bg-[#067f55] active:scale-[0.98]"
                     >
                       Claim
                     </button>
@@ -368,6 +382,8 @@ function Payment({ user, onNavigate }) {
         </div>
 
       </div>
+
+      {/* ================= BOTTOM NAV ================= */}
 
       <BottomNavigation
         active="Payment"

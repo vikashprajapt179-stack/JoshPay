@@ -5,6 +5,7 @@ import {
   Upload,
   X,
 } from "lucide-react";
+
 function Order({ user, order, onNavigate }) {
   const [utr, setUtr] = useState("");
   const [screenshot, setScreenshot] = useState(null);
@@ -15,7 +16,9 @@ function Order({ user, order, onNavigate }) {
 
   // 30 second processing timer
   const [processingTime, setProcessingTime] = useState(0);
+
   // ================= 7 MINUTE PAYMENT TIMER =================
+
   const [timeLeft, setTimeLeft] = useState(7 * 60);
 
   useEffect(() => {
@@ -46,10 +49,12 @@ function Order({ user, order, onNavigate }) {
 
   // ================= ORDER DATA =================
 
-  const amount = Number(order?.amount ?? 200);
+  const amount = Number(
+    order?.amount ?? 200
+  );
 
   const payeeAccount = " 002821713552123";
-  const payeeName = "Divyansh"; 
+  const payeeName = "Divyansh";
   const ifsc = "JIOP0000001";
   const type = "IMPS";
 
@@ -79,7 +84,6 @@ function Order({ user, order, onNavigate }) {
     user?.userId;
 
   // ================= POLL ORDER STATUS =================
-  // Sirf payment submit hone ke baad status check hoga.
 
   useEffect(() => {
     if (status !== "Processing") {
@@ -106,7 +110,9 @@ function Order({ user, order, onNavigate }) {
 
         if (data.status === "Processing") {
           setProcessingTime(
-            Number(data.remainingSeconds || 0)
+            Number(
+              data.remainingSeconds || 0
+            )
           );
         }
 
@@ -114,7 +120,6 @@ function Order({ user, order, onNavigate }) {
           setProcessingTime(0);
           setStatus("Completed");
 
-          // Parent/local user balance update ke liye
           window.dispatchEvent(
             new Event("balanceUpdated")
           );
@@ -194,6 +199,7 @@ function Order({ user, order, onNavigate }) {
       );
       return;
     }
+
     if (!utr.trim()) {
       alert(
         "Please enter UTR / Transaction ID"
@@ -212,11 +218,8 @@ function Order({ user, order, onNavigate }) {
       return;
     }
 
-    // 7 minute timer expire
     if (timeLeft <= 0) {
-      alert(
-        "Payment time has expired."
-      );
+      alert("Payment time has expired.");
       return;
     }
 
@@ -254,8 +257,6 @@ function Order({ user, order, onNavigate }) {
         return;
       }
 
-      // IMPORTANT:
-      // Abhi pehli baar Processing start hoga.
       setStatus("Processing");
 
       setProcessingTime(
@@ -295,15 +296,11 @@ function Order({ user, order, onNavigate }) {
       return;
     }
 
-    // Agar payment submit hi nahi hua,
-    // to database me order hai hi nahi.
-    // Sirf screen par cancel kar do.
     if (status === "Pending") {
       setStatus("Cancelled");
       return;
     }
 
-    // Processing order ko backend se cancel karna
     if (status !== "Processing") {
       return;
     }
@@ -361,27 +358,33 @@ function Order({ user, order, onNavigate }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f7fb] pb-10">
+    <div className="min-h-screen w-full overflow-x-hidden bg-[#f5f7fb] pb-8">
 
       {/* ================= HEADER ================= */}
 
-      <div className="relative flex items-center justify-center bg-white px-5 pt-7 pb-6">
+      <div className="relative flex items-center justify-center bg-white px-4 sm:px-5 pt-4 sm:pt-7 pb-4 sm:pb-6">
 
         <button
           type="button"
           onClick={() =>
             onNavigate("payment")
           }
-          className="absolute left-6 top-7"
+          className="absolute left-3 sm:left-6 top-4 sm:top-7 flex h-9 w-9 sm:h-auto sm:w-auto items-center justify-center"
         >
           <ArrowLeft
-            size={42}
+            size={30}
+            className="sm:hidden text-[#15936d]"
             strokeWidth={2}
-            className="text-[#15936d]"
+          />
+
+          <ArrowLeft
+            size={42}
+            className="hidden sm:block text-[#15936d]"
+            strokeWidth={2}
           />
         </button>
 
-        <h1 className="text-[38px] font-bold text-[#129267]">
+        <h1 className="text-[25px] sm:text-[38px] font-bold text-[#129267]">
           Order
         </h1>
 
@@ -390,18 +393,18 @@ function Order({ user, order, onNavigate }) {
       {/* ================= 7 MINUTE TIMER ================= */}
 
       {status === "Pending" && (
-        <div className="mx-12 mt-5 rounded-[20px] bg-white px-5 py-4 text-center shadow-sm">
+        <div className="mx-4 sm:mx-12 mt-4 sm:mt-5 rounded-[17px] sm:rounded-[20px] bg-white px-4 sm:px-5 py-3 sm:py-4 text-center shadow-sm">
 
-          <p className="text-[17px] font-semibold text-[#68788b]">
+          <p className="text-[13px] sm:text-[17px] font-semibold text-[#68788b]">
             Payment Time Remaining
           </p>
 
-          <div className="mt-1 text-[38px] font-bold text-[#15936d]">
+          <div className="mt-1 text-[32px] sm:text-[38px] font-bold text-[#15936d]">
             {minutes}:{seconds}
           </div>
 
           {timeLeft === 0 && (
-            <p className="text-[15px] font-semibold text-red-500">
+            <p className="text-[13px] sm:text-[15px] font-semibold text-red-500">
               Time expired
             </p>
           )}
@@ -409,20 +412,21 @@ function Order({ user, order, onNavigate }) {
         </div>
       )}
 
-      {/* ================= 30 SECOND PROCESSING ================= */}
+      {/* ================= PROCESSING ================= */}
 
       {status === "Processing" && (
-        <div className="mx-12 mt-5 rounded-[20px] bg-white px-5 py-5 text-center shadow-sm">
+        <div className="mx-4 sm:mx-12 mt-4 sm:mt-5 rounded-[17px] sm:rounded-[20px] bg-white px-4 sm:px-5 py-4 sm:py-5 text-center shadow-sm">
 
-          <p className="text-[18px] font-semibold text-[#68788b]">
+          <p className="text-[15px] sm:text-[18px] font-semibold text-[#68788b]">
             Order Processing
           </p>
 
-          <div className="mt-1 text-[38px] font-bold text-[#15936d]">
-            {processingMinutes}:{processingSeconds}
+          <div className="mt-1 text-[32px] sm:text-[38px] font-bold text-[#15936d]">
+            {processingMinutes}:
+            {processingSeconds}
           </div>
 
-          <p className="mt-1 text-[15px] text-gray-500">
+          <p className="mt-1 text-[13px] sm:text-[15px] text-gray-500">
             Please wait while your payment is being processed.
           </p>
 
@@ -432,19 +436,19 @@ function Order({ user, order, onNavigate }) {
       {/* ================= SUCCESS ================= */}
 
       {status === "Completed" && (
-        <div className="mx-12 mt-5 rounded-[20px] bg-white px-5 py-5 text-center shadow-sm">
+        <div className="mx-4 sm:mx-12 mt-4 sm:mt-5 rounded-[17px] sm:rounded-[20px] bg-white px-4 sm:px-5 py-4 sm:py-5 text-center shadow-sm">
 
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#eaf8f2]">
-            <span className="text-[38px] font-bold text-[#15936d]">
+          <div className="mx-auto flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-[#eaf8f2]">
+            <span className="text-[32px] sm:text-[38px] font-bold text-[#15936d]">
               ✓
             </span>
           </div>
 
-          <h2 className="mt-3 text-[26px] font-bold text-[#15936d]">
+          <h2 className="mt-3 text-[21px] sm:text-[26px] font-bold text-[#15936d]">
             Order Successful
           </h2>
 
-          <p className="mt-1 text-[16px] text-gray-500">
+          <p className="mt-1 text-[13px] sm:text-[16px] text-gray-500">
             Payment has been completed successfully.
           </p>
 
@@ -453,23 +457,23 @@ function Order({ user, order, onNavigate }) {
 
       {/* ================= ORDER CARD ================= */}
 
-      <div className="mx-12 mt-7 overflow-hidden rounded-[28px] bg-white shadow-sm">
+      <div className="mx-4 sm:mx-12 mt-5 sm:mt-7 overflow-hidden rounded-[20px] sm:rounded-[28px] bg-white shadow-sm">
 
         {/* AMOUNT */}
 
-        <div className="bg-[#eaf8f2] py-2 text-center">
+        <div className="bg-[#eaf8f2] py-3 sm:py-2 text-center">
 
-          <span className="text-[56px] font-bold text-[#128f68]">
+          <span className="text-[30px] sm:text-[56px] font-bold text-[#128f68]">
             INR
           </span>
 
-          <span className="ml-2 text-[56px] font-extrabold text-[#111827]">
+          <span className="ml-1.5 sm:ml-2 text-[30px] sm:text-[56px] font-extrabold text-[#111827]">
             {amount.toFixed(2)}
           </span>
 
         </div>
 
-        <div className="px-9 py-5">
+        <div className="px-4 sm:px-9 py-4 sm:py-5">
 
           <CopyRow
             label="PayeeAccount:"
@@ -491,15 +495,15 @@ function Order({ user, order, onNavigate }) {
 
           <div className="border-b border-[#d9eee7] py-3">
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-start justify-between gap-3">
 
-              <span className="text-[24px] text-[#68788b]">
+              <span className="text-[14px] sm:text-[24px] text-[#68788b]">
                 IFSC:
               </span>
 
-              <div className="flex items-center gap-4">
+              <div className="flex min-w-0 items-center gap-2 sm:gap-4">
 
-                <span className="text-[23px] text-[#202633]">
+                <span className="break-all text-right text-[14px] sm:text-[23px] text-[#202633]">
                   {ifsc}
                 </span>
 
@@ -508,16 +512,24 @@ function Order({ user, order, onNavigate }) {
                   onClick={() =>
                     copyText(ifsc)
                   }
-                  className="text-[#15936d]"
+                  className="shrink-0 text-[#15936d]"
                 >
-                  <Copy size={26} />
+                  <Copy
+                    size={19}
+                    className="sm:hidden"
+                  />
+
+                  <Copy
+                    size={26}
+                    className="hidden sm:block"
+                  />
                 </button>
 
               </div>
 
             </div>
 
-            <p className="mt-2 text-right text-[17px] font-semibold text-[#c6a875]">
+            <p className="mt-2 text-right text-[11px] sm:text-[17px] font-semibold text-[#c6a875]">
               Note : IF IFSC Mismatched , Do Not Pay
             </p>
 
@@ -535,25 +547,25 @@ function Order({ user, order, onNavigate }) {
 
           <div className="border-b border-[#d9eee7] py-3">
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3">
 
-              <span className="text-[24px] text-[#68788b]">
+              <span className="text-[14px] sm:text-[24px] text-[#68788b]">
                 Payout Wallet:
               </span>
 
-              <div className="flex items-center gap-3">
+              <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
 
-                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#1d5ce8] text-white">
+                <div className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-md bg-[#1d5ce8] text-sm sm:text-base text-white">
                   M
                 </div>
 
-                <span className="text-[23px] text-[#202633]">
+                <span className="text-[13px] sm:text-[23px] text-[#202633]">
                   Mobikwik
                 </span>
 
                 <button
                   type="button"
-                  className="rounded-full border-2 border-[#b8e2d5] bg-[#eaf8f2] px-4 py-2 text-[18px] font-bold text-[#188d68]"
+                  className="rounded-full border sm:border-2 border-[#b8e2d5] bg-[#eaf8f2] px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-[18px] font-bold text-[#188d68]"
                 >
                   Change
                 </button>
@@ -582,15 +594,15 @@ function Order({ user, order, onNavigate }) {
 
           {/* STATUS */}
 
-          <div className="flex items-center justify-between border-b border-[#d9eee7] py-3">
+          <div className="flex items-center justify-between gap-3 border-b border-[#d9eee7] py-3">
 
-            <span className="text-[24px] text-[#68788b]">
+            <span className="text-[14px] sm:text-[24px] text-[#68788b]">
               Status:
             </span>
 
-            <div className="flex items-center gap-3">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
 
-              <span className="text-[23px] font-medium text-[#202633]">
+              <span className="text-right text-[14px] sm:text-[23px] font-medium text-[#202633]">
                 {status === "Pending" &&
                   "Pending"}
 
@@ -610,13 +622,21 @@ function Order({ user, order, onNavigate }) {
                   type="button"
                   onClick={handleCancel}
                   disabled={loading}
-                  className={`flex items-center gap-1 rounded-full border-2 px-4 py-2 text-[17px] font-bold ${
+                  className={`flex shrink-0 items-center gap-1 rounded-full border px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-[17px] font-bold ${
                     loading
                       ? "border-gray-200 bg-gray-100 text-gray-400"
                       : "border-red-200 bg-red-50 text-red-500"
                   }`}
                 >
-                  <X size={18} />
+                  <X
+                    size={14}
+                    className="sm:hidden"
+                  />
+
+                  <X
+                    size={18}
+                    className="hidden sm:block"
+                  />
 
                   {loading
                     ? "Please wait..."
@@ -640,10 +660,11 @@ function Order({ user, order, onNavigate }) {
 
           <button
             type="button"
-            className="mt-5 flex w-full items-center justify-center rounded-full border-2 border-[#cce9df] py-4 text-[26px] font-bold text-[#2a9572]"
+            className="mt-4 sm:mt-5 flex w-full items-center justify-center rounded-full border-2 border-[#cce9df] py-3 sm:py-4 text-[17px] sm:text-[26px] font-bold text-[#2a9572]"
           >
             View Voucher
-            <span className="ml-3 text-[32px]">
+
+            <span className="ml-2 sm:ml-3 text-[25px] sm:text-[32px]">
               ›
             </span>
           </button>
@@ -654,22 +675,22 @@ function Order({ user, order, onNavigate }) {
       {/* ================= PAYMENT DETAILS ================= */}
 
       {status === "Pending" && (
-        <div className="mx-12 mt-7 rounded-[25px] bg-white p-6 shadow-sm">
+        <div className="mx-4 sm:mx-12 mt-5 sm:mt-7 rounded-[20px] sm:rounded-[25px] bg-white p-4 sm:p-6 shadow-sm">
 
-          <h2 className="text-[26px] font-bold text-[#15936d]">
+          <h2 className="text-[21px] sm:text-[26px] font-bold text-[#15936d]">
             Payment Details
           </h2>
 
-          <p className="mt-2 text-[16px] text-gray-500">
+          <p className="mt-2 text-[13px] sm:text-[16px] text-gray-500">
             After making the payment, enter your
             UTR / transaction details below.
           </p>
 
           {/* UTR */}
 
-          <div className="mt-5">
+          <div className="mt-4 sm:mt-5">
 
-            <label className="text-[18px] font-semibold text-gray-700">
+            <label className="text-[15px] sm:text-[18px] font-semibold text-gray-700">
               UTR / Transaction ID
             </label>
 
@@ -680,29 +701,34 @@ function Order({ user, order, onNavigate }) {
                 setUtr(e.target.value)
               }
               placeholder="Enter UTR / Transaction ID"
-              className="mt-2 h-[55px] w-full rounded-xl border border-gray-300 px-4 text-[17px] outline-none focus:border-[#15936d]"
+              className="mt-2 h-[50px] sm:h-[55px] w-full rounded-xl border border-gray-300 px-3 sm:px-4 text-[14px] sm:text-[17px] outline-none focus:border-[#15936d]"
             />
 
           </div>
 
           {/* SCREENSHOT */}
 
-          <div className="mt-5">
+          <div className="mt-4 sm:mt-5">
 
-            <label className="text-[18px] font-semibold text-gray-700">
+            <label className="text-[15px] sm:text-[18px] font-semibold text-gray-700">
               Payment Screenshot
             </label>
 
-            <label className="mt-2 flex h-[100px] cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-[#b9dfd2] bg-[#f4fbf8]">
+            <label className="mt-2 flex h-[90px] sm:h-[100px] cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-[#b9dfd2] bg-[#f4fbf8]">
 
-              <div className="text-center">
+              <div className="max-w-full px-3 text-center">
+
+                <Upload
+                  size={25}
+                  className="mx-auto text-[#15936d] sm:hidden"
+                />
 
                 <Upload
                   size={30}
-                  className="mx-auto text-[#15936d]"
+                  className="mx-auto hidden text-[#15936d] sm:block"
                 />
 
-                <p className="mt-1 text-[15px] text-gray-600">
+                <p className="mt-1 truncate text-[12px] sm:text-[15px] text-gray-600">
                   {screenshot
                     ? screenshot.name
                     : "Upload payment screenshot"}
@@ -731,7 +757,7 @@ function Order({ user, order, onNavigate }) {
               status !== "Pending" ||
               timeLeft <= 0
             }
-            className={`mt-6 h-[58px] w-full rounded-full text-[20px] font-bold text-white shadow-md ${
+            className={`mt-5 sm:mt-6 h-[52px] sm:h-[58px] w-full rounded-full text-[17px] sm:text-[20px] font-bold text-white shadow-md ${
               loading ||
               status !== "Pending" ||
               timeLeft <= 0
@@ -752,13 +778,13 @@ function Order({ user, order, onNavigate }) {
       {/* ================= PROCESSING MESSAGE ================= */}
 
       {status === "Processing" && (
-        <div className="mx-12 mt-7 rounded-[25px] bg-white p-6 text-center shadow-sm">
+        <div className="mx-4 sm:mx-12 mt-5 sm:mt-7 rounded-[20px] sm:rounded-[25px] bg-white p-5 sm:p-6 text-center shadow-sm">
 
-          <h2 className="text-[24px] font-bold text-[#15936d]">
+          <h2 className="text-[21px] sm:text-[24px] font-bold text-[#15936d]">
             Payment Submitted
           </h2>
 
-          <p className="mt-2 text-[16px] text-gray-500">
+          <p className="mt-2 text-[13px] sm:text-[16px] text-gray-500">
             Your payment has been submitted.
             Please wait for processing to complete.
           </p>
@@ -769,22 +795,27 @@ function Order({ user, order, onNavigate }) {
       {/* ================= CANCELLED ================= */}
 
       {status === "Cancelled" && (
-        <div className="mx-12 mt-7 rounded-[25px] bg-white p-6 text-center shadow-sm">
+        <div className="mx-4 sm:mx-12 mt-5 sm:mt-7 rounded-[20px] sm:rounded-[25px] bg-white p-5 sm:p-6 text-center shadow-sm">
 
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+          <div className="mx-auto flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-red-50">
+
+            <X
+              size={30}
+              className="text-red-500 sm:hidden"
+            />
 
             <X
               size={35}
-              className="text-red-500"
+              className="hidden text-red-500 sm:block"
             />
 
           </div>
 
-          <h2 className="mt-4 text-[24px] font-bold text-red-500">
+          <h2 className="mt-4 text-[21px] sm:text-[24px] font-bold text-red-500">
             Order Cancelled
           </h2>
 
-          <p className="mt-2 text-[16px] text-gray-500">
+          <p className="mt-2 text-[13px] sm:text-[16px] text-gray-500">
             This order has been cancelled.
           </p>
 
@@ -804,15 +835,15 @@ function CopyRow({
   onCopy,
 }) {
   return (
-    <div className="flex items-center justify-between border-b border-[#d9eee7] py-3">
+    <div className="flex items-start justify-between gap-3 border-b border-[#d9eee7] py-3">
 
-      <span className="text-[24px] text-[#68788b]">
+      <span className="shrink-0 text-[14px] sm:text-[24px] text-[#68788b]">
         {label}
       </span>
 
-      <div className="flex items-center gap-4">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-4">
 
-        <span className="max-w-[300px] break-all text-right text-[23px] text-[#202633]">
+        <span className="max-w-[170px] sm:max-w-[300px] break-all text-right text-[14px] sm:text-[23px] text-[#202633]">
           {value || "-"}
         </span>
 
@@ -821,7 +852,15 @@ function CopyRow({
           onClick={onCopy}
           className="shrink-0 text-[#15936d]"
         >
-          <Copy size={26} />
+          <Copy
+            size={19}
+            className="sm:hidden"
+          />
+
+          <Copy
+            size={26}
+            className="hidden sm:block"
+          />
         </button>
 
       </div>
