@@ -6,15 +6,15 @@ function Payment({ user, onNavigate }) {
     useState("Top Picks");
 
   const [balance, setBalance] = useState(
-    Number(user?.balance ?? 200)
-  );
+  Number(user?.balance ?? 150)
+);
 
   const [reward, setReward] = useState(
     Number(user?.bonus ?? 0)
   );
 
   const [pending, setPending] = useState(0);
-
+  
   const userId =
     user?._id ||
     user?.id ||
@@ -28,6 +28,17 @@ function Payment({ user, onNavigate }) {
   ];
 
   const payments = [
+    ...Array.from({ length: 10 }, (_, i) => ({
+      amount: 500,
+      income: "+22.5",
+      code: `A7XQ${i + 1}`,
+    })),
+
+    ...Array.from({ length: 5 }, (_, i) => ({
+      amount: 400,
+      income: "+18",
+      code: `OK400${i + 1}`,
+    })),
     ...Array.from({ length: 10 }, (_, i) => ({
       amount: 1000,
       income: "+45",

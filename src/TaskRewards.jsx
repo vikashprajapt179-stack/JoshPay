@@ -5,17 +5,25 @@ const TaskRewards = ({
   onBack,
   unlocked,
   totalDeposit = 0,
-  reward = 300,
   user,
   onBalanceUpdate,
 }) => {
-  const target = 1000;
+  // =========================================
+  // FIXED TASK SETTINGS
+  // =========================================
+  const target = 500;
+  const taskReward = 100;
 
   const [claiming, setClaiming] = useState(false);
-  const [claimed, setClaimed] = useState(false);
+  const [claimed, setClaimed] = useState(
+    Boolean(user?.taskRewardClaimed)
+  );
 
   const depositAmount = Number(totalDeposit) || 0;
 
+  // =========================================
+  // PROGRESS
+  // =========================================
   const progress = Math.min(depositAmount, target);
 
   const isUnlocked =
@@ -24,16 +32,18 @@ const TaskRewards = ({
   const taskAlreadyClaimed =
     Boolean(user?.taskRewardClaimed) || claimed;
 
-  // Claim hone ke baad percentage 1000%
   const progressPercent = taskAlreadyClaimed
-    ? 1000
-    : (progress / target) * 100;
+    ? 100
+    : Math.min((progress / target) * 100, 100);
 
-  // Progress bar ke liye maximum 100%
   const barPercent = Math.min(progressPercent, 100);
 
+  // =========================================
+  // UNLOCK / CLAIM REWARD
+  // =========================================
   const handleUnlock = async () => {
     if (!isUnlocked) {
+      alert("Complete ₹500 total deposit first.");
       return;
     }
 
@@ -76,18 +86,16 @@ const TaskRewards = ({
         );
       }
 
-      // Reward successfully claimed
+      // Reward claimed
       setClaimed(true);
 
-      // Update balance in parent/Home/Payment
+      // Update balance
       if (typeof onBalanceUpdate === "function") {
         onBalanceUpdate(Number(data.balance || 0));
       }
 
       alert(
-        `₹${Number(
-          data.reward || reward
-        )} reward added to your balance!`
+        `₹${Number(data.reward || taskReward)} reward added to your balance!`
       );
     } catch (error) {
       console.error(
@@ -194,11 +202,7 @@ const TaskRewards = ({
               <div className="w-[70px] sm:w-[100px] h-[6px] sm:h-[7px] bg-gray-200 rounded-full overflow-hidden">
 
                 <div
-                  className={`h-full rounded-full transition-all duration-300 ${
-                    isUnlocked
-                      ? "bg-green-500"
-                      : "bg-gray-300"
-                  }`}
+                  className="h-full rounded-full transition-all duration-300 bg-green-500"
                   style={{
                     width: `${barPercent}%`,
                   }}
@@ -209,11 +213,7 @@ const TaskRewards = ({
               {/* PERCENTAGE */}
 
               <span className="text-[8px] sm:text-[10px] text-gray-500 min-w-[25px] text-right">
-                {taskAlreadyClaimed
-                  ? "1000%"
-                  : `${Math.round(
-                      progressPercent
-                    )}%`}
+                {Math.round(progressPercent)}%
               </span>
 
             </div>
@@ -223,7 +223,7 @@ const TaskRewards = ({
           {/* DESCRIPTION */}
 
           <p className="text-[10px] sm:text-[11px] text-gray-500 mt-1.5 leading-4">
-            Deposit a total of ₹1000 to unlock 300 tokens.
+            Deposit a total of ₹500 to unlock ₹100.
           </p>
 
           {/* REWARD + BUTTON */}
@@ -236,8 +236,9 @@ const TaskRewards = ({
                 +
               </div>
 
+              {/* ALWAYS ₹100 */}
               <span className="text-[15px] sm:text-[17px] font-bold text-gray-700">
-                {reward}
+                {taskReward}
               </span>
 
             </div>
@@ -292,14 +293,13 @@ const TaskRewards = ({
             <p className="text-[10px] sm:text-[11px] leading-4 text-green-700">
 
               {taskAlreadyClaimed
-                ? "🎉 ₹300 reward has been added to your balance! Progress: 1000%"
+                ? "🎉 ₹100 reward has been added to your balance! Progress: 100%"
                 : isUnlocked
-                ? "🎉 ₹1000 completed — tap Unlock to claim ₹300!"
-                : `Deposit ₹${(
-                    target - progress
-                  ).toFixed(
+                ? "🎉 ₹500 completed — tap Unlock to claim ₹100!"
+                : `Deposit ₹${Math.max(
+                    target - progress,
                     0
-                  )} more to unlock ₹${reward}.`}
+                  ).toFixed(0)} more to unlock ₹100.`}
 
             </p>
 

@@ -24,7 +24,6 @@ function UserIcon() {
       fill="none"
       stroke="#333"
       strokeWidth="1.8"
-      className="shrink-0 sm:h-8 sm:w-8"
     >
       <circle cx="12" cy="8" r="3" />
       <path d="M5 21c0-4 3-6 7-6s7 2 7 6" />
@@ -42,7 +41,6 @@ function LockIcon() {
       fill="none"
       stroke="#333"
       strokeWidth="1.8"
-      className="shrink-0 sm:h-8 sm:w-8"
     >
       <rect x="5" y="10" width="14" height="10" rx="1" />
       <path d="M8 10V7a4 4 0 0 1 8 0v3" />
@@ -53,7 +51,7 @@ function LockIcon() {
 function CheckIcon({ checked }) {
   return (
     <span
-      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold sm:h-7 sm:w-7 sm:text-lg ${
+      className={`flex h-5 w-5 items-center justify-center rounded-full border-2 text-sm font-bold sm:h-7 sm:w-7 sm:text-lg ${
         checked
           ? "border-[#7acb61] bg-[#7acb61] text-white"
           : "border-[#999] bg-white text-transparent"
@@ -66,18 +64,36 @@ function CheckIcon({ checked }) {
 
 function App() {
   // ==================================================
+  // CONSTANTS
+  // ==================================================
+
+ const TASK_TARGET = 500;
+const TASK_REWARD = 100;
+const SIGNUP_BALANCE = 150;
+
+  // ==================================================
   // ADMIN PANEL
   // ==================================================
 
-  const isAdminPage = window.location.pathname === "/admin";
+  const isAdminPage =
+    window.location.pathname === "/admin";
 
   // ==================================================
   // SAVED LOGIN
   // ==================================================
 
-  const savedUser = localStorage.getItem("okpayUser");
-  const savedToken = localStorage.getItem("okpayToken");
-  const savedRemember = localStorage.getItem("okpayRemember");
+  const savedUser =
+    localStorage.getItem("okpayUser");
+
+  const savedToken =
+    localStorage.getItem("okpayToken");
+
+  const savedRemember =
+    localStorage.getItem("okpayRemember");
+
+  // ==================================================
+  // PAGE
+  // ==================================================
 
   const [page, setPage] = useState(
     savedUser &&
@@ -87,8 +103,15 @@ function App() {
       : "login"
   );
 
+  // ==================================================
+  // USER
+  // ==================================================
+
   const [user, setUser] = useState(() => {
-    if (savedUser && savedRemember === "true") {
+    if (
+      savedUser &&
+      savedRemember === "true"
+    ) {
       try {
         return JSON.parse(savedUser);
       } catch {
@@ -104,38 +127,50 @@ function App() {
   // ==================================================
 
   const [wallet, setWallet] = useState(() => {
-    const savedWallet = localStorage.getItem("okpayWallet");
+  const savedWallet = localStorage.getItem("okpayWallet");
 
-    if (savedWallet !== null) {
-      return Number(savedWallet);
-    }
+  if (savedWallet !== null) {
+    return Number(savedWallet);
+  }
 
-    return Number(user?.balance ?? 200);
-  });
-
+  return Number(user?.balance ?? SIGNUP_BALANCE);
+});
   // ==================================================
   // TASK
   // ==================================================
 
-  const [taskUnlocked, setTaskUnlocked] = useState(
-    localStorage.getItem("taskUnlocked") === "true"
-  );
+  const [taskUnlocked, setTaskUnlocked] =
+    useState(
+      localStorage.getItem(
+        "taskUnlocked"
+      ) === "true"
+    );
 
   // ==================================================
   // SELECTED ORDER
   // ==================================================
 
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrder, setSelectedOrder] =
+    useState(null);
 
   // ==================================================
   // LOGIN STATES
   // ==================================================
 
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(true);
-  const [privacy, setPrivacy] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [phone, setPhone] =
+    useState("");
+
+  const [password, setPassword] =
+    useState("");
+
+  const [remember, setRemember] =
+    useState(true);
+
+  const [privacy, setPrivacy] =
+    useState(true);
+
+  const [loading, setLoading] =
+    useState(false);
 
   // ==================================================
   // LOGIN
@@ -145,17 +180,23 @@ function App() {
     e.preventDefault();
 
     if (!phone || !password) {
-      alert("Please enter Phone and Password");
+      alert(
+        "Please enter Phone and Password"
+      );
       return;
     }
 
     if (phone.length !== 10) {
-      alert("Please enter valid 10 digit phone number");
+      alert(
+        "Please enter valid 10 digit phone number"
+      );
       return;
     }
 
     if (!privacy) {
-      alert("Please agree to User Privacy Agreement");
+      alert(
+        "Please agree to User Privacy Agreement"
+      );
       return;
     }
 
@@ -167,7 +208,8 @@ function App() {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type":
+              "application/json",
           },
           body: JSON.stringify({
             phone: phone,
@@ -176,9 +218,13 @@ function App() {
         }
       );
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
-      console.log("Login Response:", data);
+      console.log(
+        "Login Response:",
+        data
+      );
 
       if (!response.ok) {
         alert(
@@ -188,43 +234,52 @@ function App() {
         return;
       }
 
-      // ==================================================
       // SAVE USER + BALANCE
-      // ==================================================
+     if (data.user) {
+  const serverBalance = Number(
+    data.user.balance ?? SIGNUP_BALANCE
+  );
 
-      if (data.user) {
-        setUser(data.user);
+  const updatedUser = {
+    ...data.user,
 
-        const serverBalance = Number(
-          data.user.balance ?? 200
-        );
+    taskReward:
+      data.user.taskReward ?? TASK_REWARD,
 
-        setWallet(serverBalance);
+    taskTarget:
+      data.user.taskTarget ?? TASK_TARGET,
+  };
 
-        localStorage.setItem(
-          "okpayUser",
-          JSON.stringify(data.user)
-        );
+  setUser(updatedUser);
+  setWallet(serverBalance);
 
-        localStorage.setItem(
-          "okpayWallet",
-          String(serverBalance)
-        );
+  localStorage.setItem(
+    "okpayUser",
+    JSON.stringify(updatedUser)
+  );
 
-        if (data.user.taskRewardUnlocked) {
-          setTaskUnlocked(true);
+  localStorage.setItem(
+    "okpayWallet",
+    String(serverBalance)
+  );
 
-          localStorage.setItem(
-            "taskUnlocked",
-            "true"
-          );
-        }
-      }
+  if (data.user.taskRewardUnlocked) {
+    setTaskUnlocked(true);
 
-      // ==================================================
+    localStorage.setItem(
+      "taskUnlocked",
+      "true"
+    );
+  } else {
+    setTaskUnlocked(false);
+
+    localStorage.removeItem(
+      "taskUnlocked"
+    );
+  }
+}
+
       // SAVE TOKEN
-      // ==================================================
-
       if (data.token) {
         localStorage.setItem(
           "okpayToken",
@@ -232,20 +287,24 @@ function App() {
         );
       }
 
-      // ==================================================
       // REMEMBER LOGIN
-      // ==================================================
-
       localStorage.setItem(
         "okpayRemember",
-        remember ? "true" : "false"
+        remember
+          ? "true"
+          : "false"
       );
 
-      alert("Login successful!");
+      alert(
+        "Login successful!"
+      );
 
       setPage("home");
     } catch (error) {
-      console.error("Login Error:", error);
+      console.error(
+        "Login Error:",
+        error
+      );
 
       alert(
         "Cannot connect to server. Please make sure backend is running."
@@ -260,13 +319,38 @@ function App() {
   // ==================================================
 
   const handleLogout = () => {
-    localStorage.removeItem("okpayUser");
-    localStorage.removeItem("okpayToken");
-    localStorage.removeItem("okpayRemember");
+    localStorage.removeItem(
+      "okpayUser"
+    );
+
+    localStorage.removeItem(
+      "okpayToken"
+    );
+
+    localStorage.removeItem(
+      "okpayRemember"
+    );
+
+    localStorage.removeItem(
+      "okpayWallet"
+    );
+
+    localStorage.removeItem(
+      "taskUnlocked"
+    );
 
     setUser(null);
+
     setPhone("");
+
     setPassword("");
+
+    setWallet(
+      SIGNUP_BALANCE
+    );
+
+    setTaskUnlocked(false);
+
     setPage("login");
   };
 
@@ -279,7 +363,9 @@ function App() {
     data = null
   ) => {
     // ORDER
-    if (destination === "order") {
+    if (
+      destination === "order"
+    ) {
       setSelectedOrder(data);
     }
 
@@ -292,13 +378,17 @@ function App() {
         const updatedUser = {
           ...prev,
           mobikwikWallet: true,
-          mobikwikPhone: data.mobikwikPhone,
-          mobikwikUpi: data.mobikwikUpi,
+          mobikwikPhone:
+            data.mobikwikPhone,
+          mobikwikUpi:
+            data.mobikwikUpi,
         };
 
         localStorage.setItem(
           "okpayUser",
-          JSON.stringify(updatedUser)
+          JSON.stringify(
+            updatedUser
+          )
         );
 
         return updatedUser;
@@ -313,23 +403,54 @@ function App() {
   // ==================================================
 
   const handlePaymentSuccess = (amount) => {
-    const orderAmount = Number(amount);
+  const orderAmount = Number(amount);
 
-    if (orderAmount === 2000) {
-      setTaskUnlocked(true);
+  /*
+    Task requirement:
+    Total deposit target = ₹500
+
+    Backend totalDeposit ko track karta hai.
+    Frontend sirf state sync karta hai.
+  */
+
+  if (orderAmount >= TASK_TARGET) {
+    setTaskUnlocked(true);
+
+    localStorage.setItem(
+      "taskUnlocked",
+      "true"
+    );
+
+    setUser((prev) => {
+      if (!prev) return prev;
+
+      const updatedUser = {
+        ...prev,
+
+        taskReward:
+          prev.taskReward ?? TASK_REWARD,
+
+        taskTarget:
+          prev.taskTarget ?? TASK_TARGET,
+
+        taskRewardUnlocked: true,
+      };
 
       localStorage.setItem(
-        "taskUnlocked",
-        "true"
+        "okpayUser",
+        JSON.stringify(updatedUser)
       );
 
-      alert(
-        "🎉 ₹2000 single order completed!\n\nTask Unlocked!\n300 Tokens unlocked."
-      );
+      return updatedUser;
+    });
 
-      setPage("home");
-    }
-  };
+    alert(
+      `🎉 ₹${TASK_TARGET} deposit completed!\n\nTask Unlocked!\n₹${TASK_REWARD} reward available.`
+    );
+
+    setPage("home");
+  }
+};
 
   // ==================================================
   // ADMIN PANEL
@@ -345,29 +466,27 @@ function App() {
 
   if (page === "login") {
     return (
-      <div className="min-h-screen w-full overflow-x-hidden bg-[#f5f7fc]">
-        <div className="mx-auto flex min-h-screen w-full max-w-[720px] flex-col px-4 sm:px-8">
+      <div className="min-h-screen bg-[#f5f7fc]">
+        <div className="mx-auto min-h-screen w-full max-w-[720px] px-8">
 
           {/* LOGO */}
-
-          <div className="flex justify-center pt-6 sm:pt-9">
+          <div className="flex justify-center pt-9">
             <img
               src="/logo.png"
-              alt="Toxic Pay"
-              className="h-[170px] w-[170px] object-contain sm:h-[300px] sm:w-[300px]"
+              alt="Josh pay"
+              className="h-[200px] w-[200px] object-contain sm:h-[300px] sm:w-[300px]"
             />
           </div>
 
           {/* LOGIN FORM */}
-
           <form
             onSubmit={handleLogin}
-            className="mt-5 sm:mt-24"
+            className="mt-8 sm:mt-24"
           >
 
             {/* PHONE */}
-
             <div className="flex h-[56px] items-center rounded-full border-2 border-[#d8eee7] bg-white px-4 sm:h-[85px] sm:px-8">
+
               <UserIcon />
 
               <input
@@ -375,7 +494,6 @@ function App() {
                 placeholder="Phone"
                 value={phone}
                 maxLength={10}
-                inputMode="numeric"
                 onChange={(e) =>
                   setPhone(
                     e.target.value.replace(
@@ -386,11 +504,12 @@ function App() {
                 }
                 className="ml-3 min-w-0 w-full bg-transparent text-[16px] outline-none placeholder:text-[#cecece] sm:ml-6 sm:text-[36px]"
               />
+
             </div>
 
             {/* PASSWORD */}
-
             <div className="mt-4 flex h-[56px] items-center rounded-full border-2 border-[#d8eee7] bg-white px-4 sm:mt-7 sm:h-[85px] sm:px-8">
+
               <LockIcon />
 
               <input
@@ -398,27 +517,32 @@ function App() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) =>
-                  setPassword(e.target.value)
+                  setPassword(
+                    e.target.value
+                  )
                 }
                 className="ml-3 min-w-0 w-full bg-transparent text-[16px] outline-none placeholder:text-[#cecece] sm:ml-6 sm:text-[36px]"
               />
+
             </div>
 
             {/* REGISTER / REMEMBER */}
-
-            <div className="mt-5 flex items-center justify-between px-1 text-[14px] text-[#168c6b] sm:mt-7 sm:px-2 sm:text-[24px]">
+            <div className="mt-5 flex items-center justify-between px-1 text-[15px] text-[#168c6b] sm:mt-7 sm:px-2 sm:text-[24px]">
 
               <button
                 type="button"
                 className="underline"
                 onClick={() =>
-                  setPage("register")
+                  setPage(
+                    "register"
+                  )
                 }
               >
                 Register
               </button>
 
-              <label className="flex cursor-pointer items-center gap-2 sm:gap-3">
+              <label className="flex cursor-pointer items-center gap-3">
+
                 <input
                   type="checkbox"
                   checked={remember}
@@ -437,13 +561,15 @@ function App() {
                 <span>
                   Remember Me
                 </span>
+
               </label>
+
             </div>
 
             {/* PRIVACY */}
+            <div className="mt-8 flex justify-center sm:mt-16">
 
-            <div className="mt-7 flex justify-center sm:mt-16">
-              <label className="flex cursor-pointer items-center text-[13px] text-[#168c6b] sm:text-[23px]">
+              <label className="flex cursor-pointer items-center text-[14px] text-[#168c6b] sm:text-[23px]">
 
                 <input
                   type="checkbox"
@@ -460,22 +586,23 @@ function App() {
                   checked={privacy}
                 />
 
-                <span className="ml-2 sm:ml-3">
+                <span className="ml-3">
                   Agree "
                   <span className="underline">
                     User Privacy Agreement
                   </span>
                   "
                 </span>
+
               </label>
+
             </div>
 
             {/* LOGIN BUTTON */}
-
             <button
               type="submit"
               disabled={loading}
-              className="mt-5 h-[54px] w-full rounded-full bg-[#129267] text-[18px] font-bold text-white shadow-md transition active:scale-[0.99] disabled:opacity-70 sm:h-[88px] sm:text-[35px]"
+              className="mt-5 h-[54px] w-full rounded-full bg-[#129267] text-[19px] font-bold text-white shadow-md disabled:opacity-70 sm:h-[88px] sm:text-[35px]"
             >
               {loading
                 ? "Signing In..."
@@ -483,25 +610,28 @@ function App() {
             </button>
 
             {/* FORGOT PASSWORD */}
+            <div className="mt-24 text-center">
 
-            <div className="mt-16 text-center sm:mt-24">
               <button
                 type="button"
-                className="text-[15px] text-[#168c6b] underline sm:text-[24px]"
+                className="text-[16px] text-[#168c6b] underline sm:text-[24px]"
                 onClick={() =>
-                  setPage("reset")
+                  setPage(
+                    "reset"
+                  )
                 }
               >
                 Forget Password
               </button>
+
             </div>
+
           </form>
 
-          {/* VERSION */}
-
-          <div className="mt-auto pb-5 pt-10 text-right text-[12px] text-[#8793a5] sm:pb-5 sm:pt-16 sm:text-[20px]">
+          <div className="mt-16 pb-5 text-right text-[13px] text-[#8793a5] sm:mt-48 sm:text-[20px]">
             v1.0.2
           </div>
+
         </div>
       </div>
     );
@@ -545,7 +675,9 @@ function App() {
         user={user}
         wallet={wallet}
         onLogout={handleLogout}
-        onNavigate={handleNavigation}
+        onNavigate={
+          handleNavigation
+        }
       />
     );
   }
@@ -559,8 +691,12 @@ function App() {
       <Payment
         user={user}
         wallet={wallet}
-        onNavigate={handleNavigation}
-        onPaymentSuccess={handlePaymentSuccess}
+        onNavigate={
+          handleNavigation
+        }
+        onPaymentSuccess={
+          handlePaymentSuccess
+        }
         onOpenOrder={(order) => {
           setSelectedOrder(order);
           setPage("order");
@@ -578,7 +714,9 @@ function App() {
       <Order
         user={user}
         order={selectedOrder}
-        onNavigate={handleNavigation}
+        onNavigate={
+          handleNavigation
+        }
       />
     );
   }
@@ -589,46 +727,68 @@ function App() {
 
   if (page === "task") {
     return (
-      <TaskRewards
-        user={user}
-        unlocked={taskUnlocked}
-        totalDeposit={user?.totalDeposit || 0}
-        reward={user?.taskReward || 300}
-        onBalanceUpdate={(newBalance) => {
-          setWallet(newBalance);
+     <TaskRewards
+  user={user}
+  unlocked={
+    Boolean(taskUnlocked) ||
+    Boolean(user?.taskRewardUnlocked)
+  }
+  totalDeposit={
+    Number(user?.totalDeposit || 0)
+  }
+  reward={
+    Number(
+      user?.taskReward ?? TASK_REWARD
+    )
+  }
+  onBalanceUpdate={(newBalance) => {
+    const balance = Number(newBalance || 0);
 
-          setUser((prev) => {
-            const updatedUser = {
-              ...prev,
-              balance: newBalance,
-              taskRewardClaimed: true,
-              taskRewardUnlocked: true,
-            };
+    setWallet(balance);
 
-            localStorage.setItem(
-              "okpayUser",
-              JSON.stringify(updatedUser)
-            );
+    setUser((prev) => {
+      if (!prev) return prev;
 
-            return updatedUser;
-          });
+      const updatedUser = {
+        ...prev,
+        balance: balance,
 
-          localStorage.setItem(
-            "okpayWallet",
-            String(newBalance)
-          );
+        taskReward:
+          Number(
+            prev.taskReward ?? TASK_REWARD
+          ),
 
-          setTaskUnlocked(true);
+        taskTarget:
+          Number(
+            prev.taskTarget ?? TASK_TARGET
+          ),
 
-          localStorage.setItem(
-            "taskUnlocked",
-            "true"
-          );
-        }}
-        onBack={() =>
-          setPage("home")
-        }
-      />
+        taskRewardClaimed: true,
+        taskRewardUnlocked: true,
+      };
+
+      localStorage.setItem(
+        "okpayUser",
+        JSON.stringify(updatedUser)
+      );
+
+      return updatedUser;
+    });
+
+    localStorage.setItem(
+      "okpayWallet",
+      String(balance)
+    );
+
+    setTaskUnlocked(true);
+
+    localStorage.setItem(
+      "taskUnlocked",
+      "true"
+    );
+  }}
+  onBack={() => setPage("home")}
+/>
     );
   }
 
@@ -639,7 +799,9 @@ function App() {
   if (page === "pin") {
     return (
       <Pin
-        onNavigate={handleNavigation}
+        onNavigate={
+          handleNavigation
+        }
       />
     );
   }
@@ -653,7 +815,9 @@ function App() {
       <My
         user={user}
         onLogout={handleLogout}
-        onNavigate={handleNavigation}
+        onNavigate={
+          handleNavigation
+        }
       />
     );
   }
@@ -666,7 +830,9 @@ function App() {
     return (
       <Tool
         user={user}
-        onNavigate={handleNavigation}
+        onNavigate={
+          handleNavigation
+        }
       />
     );
   }
@@ -679,7 +845,9 @@ function App() {
     return (
       <Statistics
         user={user}
-        onNavigate={handleNavigation}
+        onNavigate={
+          handleNavigation
+        }
       />
     );
   }
@@ -691,7 +859,9 @@ function App() {
   if (page === "team") {
     return (
       <Team
-        onNavigate={handleNavigation}
+        onNavigate={
+          handleNavigation
+        }
       />
     );
   }
@@ -704,7 +874,9 @@ function App() {
     return (
       <AddTool
         user={user}
-        onNavigate={handleNavigation}
+        onNavigate={
+          handleNavigation
+        }
       />
     );
   }
@@ -716,7 +888,9 @@ function App() {
   if (page === "service") {
     return (
       <Service
-        onNavigate={handleNavigation}
+        onNavigate={
+          handleNavigation
+        }
       />
     );
   }

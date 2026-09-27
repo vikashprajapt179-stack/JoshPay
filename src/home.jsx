@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import BottomNavigation from "./BottomNavigation";
 
 function Home({ user, onLogout, onNavigate }) {
-  const [balance, setBalance] = useState(
-    Number(user?.balance ?? 200)
-  );
+const [balance, setBalance] = useState(
+  Number(user?.balance ?? 150)
+);
 
   const [totalDeposit, setTotalDeposit] = useState(
     Number(user?.totalDeposit ?? 0)
@@ -70,7 +70,7 @@ function Home({ user, onLogout, onNavigate }) {
       taskReward:
         data.taskReward ??
         currentUser.taskReward ??
-        300,
+        100,
     };
 
     localStorage.setItem(

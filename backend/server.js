@@ -14,9 +14,17 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
 app.use("/api/admin", adminRoutes);
+
 const PORT = process.env.PORT || 5000;
 
+// =====================================================
+// TASK REWARD SETTINGS
+// =====================================================
+
+const TASK_TARGET = 500;
+const TASK_REWARD = 100;
 
 // =====================================================
 // BASIC TEST
@@ -26,9 +34,14 @@ app.get("/", (req, res) => {
   res.json({
     success: true,
     message: "OK Pay server is running",
+    taskTarget: TASK_TARGET,
+    taskReward: TASK_REWARD,
   });
 });
 
+// =====================================================
+// REGISTER
+// =====================================================
 
 // =====================================================
 // REGISTER
@@ -65,77 +78,74 @@ app.post("/api/register", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new User({
+    const newUser = new User({
       username,
       email: email || "",
       phone,
       password: hashedPassword,
 
       referralCode: referralCode || "",
-      inviteCode: referralCode || "",
 
-      balance: 200,
-
+      // ==============================
+      // NEW USER STARTING VALUES
+      // ==============================
+      balance: 150,
       bonus: 0,
 
       totalDeposit: 0,
       totalWithdrawal: 0,
 
+      // ==============================
+      // TASK VALUES
+      // ==============================
+      taskReward: 100,
       taskRewardUnlocked: false,
       taskRewardClaimed: false,
-      taskReward: 300,
-
-      withdrawalAvailableAt: null,
-
-      transactions: [],
-
-      mobikwikWallet: false,
-      mobikwikPhone: "",
-      mobikwikUpi: "",
     });
 
-    await user.save();
+    await newUser.save();
 
     res.status(201).json({
       success: true,
       message: "Registration successful",
 
       user: {
-        id: user._id,
-        _id: user._id,
-        username: user.username,
-        email: user.email || "",
-        phone: user.phone,
+        id: newUser._id,
+        _id: newUser._id,
 
-        balance: Number(user.balance || 0),
+        username: newUser.username,
+        email: newUser.email || "",
+        phone: newUser.phone,
 
-        bonus: Number(user.bonus || 0),
+        balance: Number(newUser.balance || 150),
+        bonus: Number(newUser.bonus || 0),
 
         totalDeposit: Number(
-          user.totalDeposit || 0
+          newUser.totalDeposit || 0
         ),
 
         totalWithdrawal: Number(
-          user.totalWithdrawal || 0
+          newUser.totalWithdrawal || 0
         ),
 
-        taskRewardUnlocked:
-          Boolean(user.taskRewardUnlocked),
+        taskRewardUnlocked: Boolean(
+          newUser.taskRewardUnlocked
+        ),
 
-        taskRewardClaimed:
-          Boolean(user.taskRewardClaimed),
+        taskRewardClaimed: Boolean(
+          newUser.taskRewardClaimed
+        ),
 
-        taskUnlocked:
-          Boolean(
-            user.taskRewardUnlocked ||
-            Number(user.totalDeposit || 0) >= 1000
-          ),
+        taskUnlocked: false,
 
-        taskReward:
-          Number(user.taskReward || 300),
+        taskTarget: TASK_TARGET,
+
+        taskReward: Number(
+          newUser.taskReward || TASK_REWARD
+        ),
 
         withdrawalAvailableAt:
-          user.withdrawalAvailableAt || null,
+          newUser.withdrawalAvailableAt || null,
       },
     });
   } catch (error) {
@@ -147,8 +157,6 @@ app.post("/api/register", async (req, res) => {
     });
   }
 });
-
-
 // =====================================================
 // LOGIN
 // =====================================================
@@ -199,13 +207,21 @@ app.post("/api/login", async (req, res) => {
 
     const now = new Date();
 
-    const withdrawalAvailable =
-      Boolean(
-        user.withdrawalAvailableAt &&
-        now >= new Date(
-          user.withdrawalAvailableAt
-        )
-      );
+    const withdrawalAvailable = Boolean(
+      user.withdrawalAvailableAt &&
+      now >= new Date(
+        user.withdrawalAvailableAt
+      )
+    );
+
+    const totalDeposit = Number(
+      user.totalDeposit || 0
+    );
+
+    const taskUnlocked = Boolean(
+      user.taskRewardUnlocked ||
+      totalDeposit >= TASK_TARGET
+    );
 
     res.json({
       success: true,
@@ -228,36 +244,36 @@ app.post("/api/login", async (req, res) => {
           user.bonus || 0
         ),
 
-        totalDeposit: Number(
-          user.totalDeposit || 0
-        ),
+        totalDeposit,
 
         totalWithdrawal: Number(
           user.totalWithdrawal || 0
         ),
 
-        taskRewardUnlocked:
-          Boolean(user.taskRewardUnlocked),
+        taskRewardUnlocked: Boolean(
+          user.taskRewardUnlocked
+        ),
 
-        taskRewardClaimed:
-          Boolean(user.taskRewardClaimed),
+        taskRewardClaimed: Boolean(
+          user.taskRewardClaimed
+        ),
 
-        taskUnlocked:
-          Boolean(
-            user.taskRewardUnlocked ||
-            Number(user.totalDeposit || 0) >= 1000
-          ),
+        taskUnlocked,
 
-        taskReward:
-          Number(user.taskReward || 300),
+        taskTarget: TASK_TARGET,
+
+        taskReward: Number(
+          user.taskReward || TASK_REWARD
+        ),
 
         withdrawalAvailable,
 
         withdrawalAvailableAt:
           user.withdrawalAvailableAt || null,
 
-        mobikwikWallet:
-          Boolean(user.mobikwikWallet),
+        mobikwikWallet: Boolean(
+          user.mobikwikWallet
+        ),
 
         mobikwikPhone:
           user.mobikwikPhone || "",
@@ -275,7 +291,6 @@ app.post("/api/login", async (req, res) => {
     });
   }
 });
-
 
 // =====================================================
 // RESET PASSWORD
@@ -328,7 +343,6 @@ app.post("/api/reset-password", async (req, res) => {
   }
 });
 
-
 // =====================================================
 // GET USER BALANCE
 // =====================================================
@@ -373,10 +387,14 @@ app.get(
       const totalDeposit =
         Number(user.totalDeposit || 0);
 
+      // ==============================
+      // TASK UNLOCK = ₹500
+      // ==============================
+
       const taskUnlocked =
         Boolean(
           user.taskRewardUnlocked ||
-          totalDeposit >= 1000
+          totalDeposit >= TASK_TARGET
         );
 
       res.json({
@@ -399,15 +417,21 @@ app.get(
         taskUnlocked,
 
         taskRewardUnlocked:
-          Boolean(user.taskRewardUnlocked),
+          Boolean(
+            user.taskRewardUnlocked
+          ),
 
-        taskTarget: 1000,
+        taskTarget: TASK_TARGET,
 
         taskReward:
-          Number(user.taskReward || 300),
+          Number(
+            user.taskReward || TASK_REWARD
+          ),
 
         taskRewardClaimed:
-          Boolean(user.taskRewardClaimed),
+          Boolean(
+            user.taskRewardClaimed
+          ),
 
         withdrawalAvailable,
 
@@ -434,9 +458,8 @@ app.get(
   }
 );
 
-
 // =====================================================
-// DEPOSIT
+// DIRECT DEPOSIT
 // =====================================================
 
 app.post(
@@ -532,11 +555,20 @@ app.post(
       user.totalDeposit =
         newTotalDeposit;
 
+      // ==============================
+      // TASK UNLOCK AT ₹500
+      // ==============================
+
       if (
-        newTotalDeposit >= 1000
+        newTotalDeposit >=
+        TASK_TARGET
       ) {
         user.taskRewardUnlocked = true;
       }
+
+      // Always keep reward ₹100
+      user.taskReward =
+        TASK_REWARD;
 
       user.withdrawalAvailableAt =
         withdrawalAvailableAt;
@@ -591,16 +623,21 @@ app.post(
           depositAmount +
           depositCommission,
 
-        taskReward: 0,
+        taskTarget:
+          TASK_TARGET,
 
-        taskRewardAdded: false,
+        taskReward:
+          TASK_REWARD,
+
+        taskRewardAdded:
+          false,
 
         taskUnlocked:
           Boolean(
             user.taskRewardUnlocked ||
             Number(
               user.totalDeposit || 0
-            ) >= 1000
+            ) >= TASK_TARGET
           ),
 
         taskRewardUnlocked:
@@ -653,7 +690,6 @@ app.post(
   }
 );
 
-
 // =====================================================
 // UNLOCK TASK REWARD
 // =====================================================
@@ -702,35 +738,68 @@ app.post(
           user.totalDeposit || 0
         );
 
-      if (totalDeposit < 1000) {
+      // =================================================
+      // IMPORTANT:
+      // ₹500 TOTAL DEPOSIT REQUIRED
+      // =================================================
+
+      if (
+        totalDeposit <
+        TASK_TARGET
+      ) {
         return res.status(400).json({
           success: false,
+
           message:
-            "Complete ₹1000 total deposit first",
+            `Complete ₹${TASK_TARGET} total deposit first`,
+
           totalDeposit,
-          taskTarget: 1000,
+
+          taskTarget:
+            TASK_TARGET,
+
+          taskReward:
+            TASK_REWARD,
         });
       }
 
-      if (user.taskRewardClaimed) {
+      // Already claimed
+      if (
+        user.taskRewardClaimed
+      ) {
         return res.status(400).json({
           success: false,
+
           message:
             "Task reward has already been claimed",
+
           balance:
-            Number(user.balance || 0),
+            Number(
+              user.balance || 0
+            ),
+
+          taskTarget:
+            TASK_TARGET,
+
+          taskReward:
+            TASK_REWARD,
         });
       }
 
+      // =================================================
+      // ADD ₹100 REWARD
+      // =================================================
+
       const reward =
-        Number(
-          user.taskReward || 300
-        );
+        TASK_REWARD;
 
       user.balance =
         Number(
           user.balance || 0
         ) +
+        reward;
+
+      user.taskReward =
         reward;
 
       user.taskRewardUnlocked =
@@ -778,6 +847,9 @@ app.post(
 
         reward,
 
+        taskTarget:
+          TASK_TARGET,
+
         taskReward:
           reward,
 
@@ -821,7 +893,6 @@ app.post(
     }
   }
 );
-
 
 // =====================================================
 // WITHDRAWAL STATUS
@@ -898,10 +969,14 @@ app.get(
         remainingSeconds,
 
         balance:
-          Number(user.balance || 0),
+          Number(
+            user.balance || 0
+          ),
 
         totalDeposit:
-          Number(user.totalDeposit || 0),
+          Number(
+            user.totalDeposit || 0
+          ),
 
         totalWithdrawal:
           Number(
@@ -921,7 +996,6 @@ app.get(
     }
   }
 );
-
 
 // =====================================================
 // WITHDRAW
@@ -1119,7 +1193,6 @@ app.post(
   }
 );
 
-
 // =====================================================
 // ADD MOBIKWIK WALLET
 // =====================================================
@@ -1254,7 +1327,6 @@ app.post(
   }
 );
 
-
 // =====================================================
 // GET MOBIKWIK WALLET
 // =====================================================
@@ -1359,7 +1431,6 @@ app.get(
   }
 );
 
-
 // =====================================================
 // SUBMIT PAYMENT / CREATE ORDER
 // =====================================================
@@ -1438,10 +1509,6 @@ app.post(
         });
       }
 
-      // ==========================================
-      // CHECK DUPLICATE ORDER
-      // ==========================================
-
       const existingOrder =
         user.transactions.find(
           (tx) =>
@@ -1478,10 +1545,6 @@ app.post(
             "Payment for this order has already been submitted",
         });
       }
-
-      // ==========================================
-      // CREATE ORDER ONLY AFTER SUBMIT
-      // ==========================================
 
       const submitTime =
         new Date();
@@ -1543,7 +1606,6 @@ app.post(
   }
 );
 
-
 // =====================================================
 // ORDER STATUS
 // =====================================================
@@ -1587,10 +1649,6 @@ app.get(
             tx.type === "Payment"
         );
 
-      // ==========================================
-      // NO PAYMENT SUBMITTED YET
-      // ==========================================
-
       if (!transaction) {
         return res.json({
           success: true,
@@ -1604,10 +1662,6 @@ app.get(
             ),
         });
       }
-
-      // ==========================================
-      // CANCELLED
-      // ==========================================
 
       if (
         transaction.status ===
@@ -1626,14 +1680,15 @@ app.get(
         });
       }
 
-      // ==========================================
-      // ALREADY COMPLETED
-      // ==========================================
-
       if (
         transaction.status ===
         "Completed"
       ) {
+        const totalDeposit =
+          Number(
+            user.totalDeposit || 0
+          );
+
         return res.json({
           success: true,
 
@@ -1650,22 +1705,20 @@ app.get(
               user.balance || 0
             ),
 
-          totalDeposit:
-            Number(
-              user.totalDeposit || 0
-            ),
+          totalDeposit,
 
           bonus:
             Number(
               user.bonus || 0
             ),
 
+          taskTarget:
+            TASK_TARGET,
+
           taskUnlocked:
             Boolean(
               user.taskRewardUnlocked ||
-              Number(
-                user.totalDeposit || 0
-              ) >= 1000
+              totalDeposit >= TASK_TARGET
             ),
 
           taskRewardUnlocked:
@@ -1677,12 +1730,13 @@ app.get(
             Boolean(
               user.taskRewardClaimed
             ),
+
+          taskReward:
+            Number(
+              user.taskReward || TASK_REWARD
+            ),
         });
       }
-
-      // ==========================================
-      // 30 SECOND PROCESSING
-      // ==========================================
 
       const createdAt =
         transaction.createdAt
@@ -1725,9 +1779,9 @@ app.get(
         });
       }
 
-      // ==========================================
+      // =================================================
       // COMPLETE ORDER AFTER 30 SECONDS
-      // ==========================================
+      // =================================================
 
       const orderAmount =
         Number(
@@ -1761,14 +1815,22 @@ app.get(
         ) +
         orderAmount;
 
+      // =================================================
+      // TASK UNLOCK AT ₹500
+      // =================================================
+
       if (
         Number(
           user.totalDeposit || 0
-        ) >= 1000
+        ) >= TASK_TARGET
       ) {
         user.taskRewardUnlocked =
           true;
       }
+
+      // Always keep reward ₹100
+      user.taskReward =
+        TASK_REWARD;
 
       transaction.status =
         "Completed";
@@ -1808,12 +1870,15 @@ app.get(
             user.totalDeposit || 0
           ),
 
+        taskTarget:
+          TASK_TARGET,
+
         taskUnlocked:
           Boolean(
             user.taskRewardUnlocked ||
             Number(
               user.totalDeposit || 0
-            ) >= 1000
+            ) >= TASK_TARGET
           ),
 
         taskRewardUnlocked:
@@ -1828,7 +1893,7 @@ app.get(
 
         taskReward:
           Number(
-            user.taskReward || 300
+            user.taskReward || TASK_REWARD
           ),
       });
     } catch (error) {
@@ -1849,7 +1914,6 @@ app.get(
     }
   }
 );
-
 
 // =====================================================
 // CANCEL ORDER
@@ -1905,10 +1969,6 @@ app.post(
             tx.type === "Payment"
         );
 
-      // ==========================================
-      // PAYMENT SUBMIT NAHI HUA
-      // ==========================================
-
       if (!transaction) {
         return res.status(400).json({
           success: false,
@@ -1917,10 +1977,6 @@ app.post(
             "Payment has not been submitted yet",
         });
       }
-
-      // ==========================================
-      // ALREADY CANCELLED
-      // ==========================================
 
       if (
         transaction.status ===
@@ -1939,10 +1995,6 @@ app.post(
         });
       }
 
-      // ==========================================
-      // COMPLETED ORDER
-      // ==========================================
-
       if (
         transaction.status ===
         "Completed"
@@ -1954,10 +2006,6 @@ app.post(
             "Completed order cannot be cancelled",
         });
       }
-
-      // ==========================================
-      // CANCEL PROCESSING ORDER
-      // ==========================================
 
       transaction.status =
         "Cancelled";
@@ -1997,7 +2045,6 @@ app.post(
   }
 );
 
-
 // =====================================================
 // START SERVER AFTER MONGODB CONNECTS
 // =====================================================
@@ -2006,6 +2053,14 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connected");
+
+    console.log(
+      `Task Reward Target: ₹${TASK_TARGET}`
+    );
+
+    console.log(
+      `Task Reward Amount: ₹${TASK_REWARD}`
+    );
 
     app.listen(
       PORT,

@@ -126,7 +126,7 @@ const userSchema = new mongoose.Schema(
     // Task Reward amount
     taskReward: {
       type: Number,
-      default: 300,
+      default: 100,
     },
 
     // Withdrawal 2 minutes ke baad available hoga
